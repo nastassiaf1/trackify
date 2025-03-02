@@ -12,6 +12,7 @@ const palette = {
   text: {
     primary: '#212121',
     secondary: '#757575',
+    black: '#000000',
   },
   error: {
     main: '#d32f2f',

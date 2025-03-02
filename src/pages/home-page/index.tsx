@@ -4,8 +4,8 @@ const HomePage = () => {
   return (
     <Box
       sx={{
-        backgroundImage:
-          'url(https://source.unsplash.com/1600x900/?motivation)',
+        position: 'relative',
+        backgroundImage: 'url(/images/leaves.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         minHeight: '100vh',
@@ -24,7 +24,7 @@ const HomePage = () => {
           fontWeight: 'bold',
           marginBottom: 2,
           fontSize: '3rem',
-          color: 'primary.main',
+          color: 'text.black',
         }}
       >
         Welcome to Habit Tracker
