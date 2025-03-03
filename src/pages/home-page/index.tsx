@@ -1,11 +1,12 @@
 import { Box, Button, Typography } from '@mui/material';
-import { useUser } from './../../context/user-context';
+import { useAuth } from '../../context/auth-context';
 
 const HomePage = () => {
-  const { isLoggedIn, username } = useUser();
+  const { user } = useAuth();
 
+  const displayName = user?.displayName;
   const transformedUserName =
-    username.charAt(0).toUpperCase() + username.slice(1);
+    displayName && displayName.charAt(0).toUpperCase() + displayName.slice(1);
 
   return (
     <Box
@@ -35,7 +36,7 @@ const HomePage = () => {
       >
         Welcome to Habit Tracker {transformedUserName}
       </Typography>
-      {isLoggedIn ? (
+      {user ? (
         <>
           <Typography
             variant="h5"

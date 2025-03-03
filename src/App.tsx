@@ -2,17 +2,17 @@ import { Route, Routes } from 'react-router-dom';
 
 import HomePage from './pages/home-page';
 import Navigation from './components/navigation';
-import { UserProvider } from './context/user-context';
+import { AuthProvider } from './context/auth-context';
 
 const App = () => {
   return (
     <div>
-      <UserProvider>
+      <AuthProvider>
         <Navigation />
         <Routes>
           <Route path="/" element={<HomePage />} />
         </Routes>
-      </UserProvider>
+      </AuthProvider>
     </div>
   );
 };

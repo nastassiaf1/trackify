@@ -1,52 +1,18 @@
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+const API_URL = 'http://localhost:5000';
+
+export const axiosInstance = axios.create({
+  baseURL: API_URL,
+  headers: { 'Content-Type': 'application/json' },
 });
 
-export const getUserProfile = async (userId: string) => {
-  try {
-    const response = await api.get(`/user/${userId}`);
-    return response.data;  // Возвращаем данные
-  } catch (error) {
-    console.error('Error fetching user profile', error);
-    throw error;
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-};
 
-export const loginUser = async (username: string, password: string) => {
-  try {
-    const response = await api.post('/login', { username, password });
-    return response.data;
-  } catch (error) {
-    console.error('Error logging in', error);
-
-    throw error;
-  }
-};
-
-export const registerUser = async (username: string, password: string) => {
-  try {
-    const response = await api.post('/register', { username, password });
-    return response.data;
-  } catch (error) {
-    console.error('Error registering', error);
-
-    throw error;
-  }
-};
-
-export const getUserHabits = async (userId: string) => {
-  try {
-    const response = await api.get(`/habits/${userId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching user habits', error);
-    throw error;
-  }
-};
-
-export default api;
+  return config;
+});

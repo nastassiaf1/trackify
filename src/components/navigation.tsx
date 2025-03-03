@@ -20,15 +20,20 @@ import ContactMailIcon from '@mui/icons-material/ContactMail';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Info, StarOutline } from '@mui/icons-material';
 
-import { useUser } from './../context/user-context';
+import { useAuth } from '../context/auth-context';
 
 const Navigation = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { isLoggedIn, logout } = useUser();
+  const { user, logout } = useAuth();
   const theme = useTheme();
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:5000/auth/google';
+    setDrawerOpen(false);
   };
 
   return (
@@ -85,7 +90,7 @@ const Navigation = () => {
             <ListItemText primary="Home" />
           </ListItemButton>
 
-          {isLoggedIn && (
+          {user && (
             <ListItemButton component={Link} to="/profile" sx={{ paddingY: 2 }}>
               <AccountCircleIcon
                 sx={{ marginRight: 2, color: 'primary.main' }}
@@ -94,10 +99,15 @@ const Navigation = () => {
             </ListItemButton>
           )}
 
-          {!isLoggedIn && (
-            <ListItemButton component={Link} to="/login" sx={{ paddingY: 2 }}>
+          {!user && (
+            <ListItemButton
+              component="a"
+              href="http://localhost:5000/auth/google"
+              target="_blank"
+              sx={{ paddingY: 2 }}
+            >
               <LoginIcon sx={{ marginRight: 2, color: 'primary.main' }} />
-              <ListItemText primary="Login / Regestration" />
+              <ListItemText primary="Login with Google" />
             </ListItemButton>
           )}
 
@@ -112,7 +122,7 @@ const Navigation = () => {
 
           <Divider sx={{ marginY: 2 }} />
 
-          <ListItemButton component={Link} to="/contacts" sx={{ paddingY: 2 }}>
+          <ListItemButton component={Link} to="/about" sx={{ paddingY: 2 }}>
             <Info sx={{ marginRight: 2, color: 'primary.main' }} />
             <ListItemText primary="About Us" />
           </ListItemButton>
@@ -122,7 +132,7 @@ const Navigation = () => {
             <ListItemText primary="Contacts" />
           </ListItemButton>
 
-          {isLoggedIn && (
+          {user && (
             <Button
               variant="outlined"
               color="error"
