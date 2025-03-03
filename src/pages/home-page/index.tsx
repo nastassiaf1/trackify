@@ -4,6 +4,9 @@ import { useUser } from './../../context/user-context';
 const HomePage = () => {
   const { isLoggedIn, username } = useUser();
 
+  const transformedUserName =
+    username.charAt(0).toUpperCase() + username.slice(1);
+
   return (
     <Box
       sx={{
@@ -30,7 +33,7 @@ const HomePage = () => {
           color: 'text.black',
         }}
       >
-        Welcome to Habit Tracker {username}
+        Welcome to Habit Tracker {transformedUserName}
       </Typography>
       {isLoggedIn ? (
         <>
