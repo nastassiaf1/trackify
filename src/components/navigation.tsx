@@ -9,12 +9,23 @@ import {
   ListItemText,
   Button,
   Box,
+  Divider,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
+import HomeIcon from '@mui/icons-material/Home';
+import LoginIcon from '@mui/icons-material/Login';
+import ContactMailIcon from '@mui/icons-material/ContactMail';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Info, StarOutline } from '@mui/icons-material';
+
+import { useUser } from './../context/user-context';
 
 const Navigation = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { isLoggedIn, logout } = useUser();
+  const theme = useTheme();
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);
@@ -22,33 +33,110 @@ const Navigation = () => {
 
   return (
     <Box>
-      <AppBar position="sticky">
-        <Toolbar>
+      <AppBar position="sticky" sx={{ boxShadow: 3 }}>
+        <Toolbar
+          sx={{
+            position: 'relative',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <IconButton
             edge="start"
             color="inherit"
-            onClick={toggleDrawer(true)}
             aria-label="menu"
+            onClick={toggleDrawer(true)}
           >
             <MenuIcon />
           </IconButton>
-          <Button color="inherit" component={Link} to="/">
-            Home
-          </Button>
+          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+            <Button
+              color="inherit"
+              sx={{
+                fontWeight: 'bold',
+                fontSize: '1.5rem',
+              }}
+              component={Link}
+              to="/"
+            >
+              TrackiFy
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
 
-      <Drawer open={drawerOpen} onClose={toggleDrawer(false)}>
-        <List>
-          <ListItemButton component={Link} to="/login">
-            <ListItemText primary="Login" />
+      <Drawer
+        open={drawerOpen}
+        onClose={toggleDrawer(false)}
+        sx={{
+          width: 250,
+          '& .MuiDrawer-paper': {
+            width: 250,
+            backgroundColor: theme.palette.background.paper,
+            borderRight: 'none',
+            boxShadow: theme.shadows[4],
+          },
+        }}
+      >
+        <List sx={{ paddingTop: 2 }}>
+          <ListItemButton component={Link} to="/" sx={{ paddingY: 2 }}>
+            <HomeIcon sx={{ marginRight: 2, color: 'primary.main' }} />
+            <ListItemText primary="Home" />
           </ListItemButton>
-          <ListItemButton component={Link} to="/register">
-            <ListItemText primary="Register" />
+
+          {isLoggedIn && (
+            <ListItemButton component={Link} to="/profile" sx={{ paddingY: 2 }}>
+              <AccountCircleIcon
+                sx={{ marginRight: 2, color: 'primary.main' }}
+              />
+              <ListItemText primary="Profile" />
+            </ListItemButton>
+          )}
+
+          {!isLoggedIn && (
+            <ListItemButton component={Link} to="/login" sx={{ paddingY: 2 }}>
+              <LoginIcon sx={{ marginRight: 2, color: 'primary.main' }} />
+              <ListItemText primary="Login / Regestration" />
+            </ListItemButton>
+          )}
+
+          <ListItemButton
+            component={Link}
+            to="/hall-of-fame"
+            sx={{ paddingY: 2 }}
+          >
+            <StarOutline sx={{ marginRight: 2, color: 'primary.main' }} />
+            <ListItemText primary="Hall of Fame" />
           </ListItemButton>
-          <ListItemButton component={Link} to="/contacts">
+
+          <Divider sx={{ marginY: 2 }} />
+
+          <ListItemButton component={Link} to="/contacts" sx={{ paddingY: 2 }}>
+            <Info sx={{ marginRight: 2, color: 'primary.main' }} />
+            <ListItemText primary="About Us" />
+          </ListItemButton>
+
+          <ListItemButton component={Link} to="/contacts" sx={{ paddingY: 2 }}>
+            <ContactMailIcon sx={{ marginRight: 2, color: 'primary.main' }} />
             <ListItemText primary="Contacts" />
           </ListItemButton>
+
+          {isLoggedIn && (
+            <Button
+              variant="outlined"
+              color="error"
+              sx={{
+                margin: 2,
+                width: '80%',
+                borderRadius: 3,
+                padding: '8px 20px',
+              }}
+              onClick={logout}
+            >
+              Log Out
+            </Button>
+          )}
         </List>
       </Drawer>
     </Box>

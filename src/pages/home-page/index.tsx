@@ -1,11 +1,14 @@
 import { Box, Button, Typography } from '@mui/material';
+import { useUser } from './../../context/user-context';
 
 const HomePage = () => {
+  const { isLoggedIn, username } = useUser();
+
   return (
     <Box
       sx={{
         position: 'relative',
-        backgroundImage: 'url(/images/leaves.jpg)',
+        backgroundImage: 'url(images/leaves.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         minHeight: '100vh',
@@ -22,24 +25,54 @@ const HomePage = () => {
         variant="h2"
         sx={{
           fontWeight: 'bold',
-          marginBottom: 2,
-          fontSize: '3rem',
+          marginBottom: { xs: 1, sm: 2 },
+          fontSize: { xs: '2rem', sm: '3rem', md: '4rem' },
           color: 'text.black',
         }}
       >
-        Welcome to Habit Tracker
+        Welcome to Habit Tracker {username}
       </Typography>
-      <Typography variant="h6" sx={{ marginBottom: 4, color: 'text.primary' }}>
-        Track your habits, stay motivated, and build your future success!
-      </Typography>
+      {isLoggedIn ? (
+        <>
+          <Typography
+            variant="h5"
+            sx={{ marginBottom: { xs: 2, sm: 4 }, color: 'text.primary' }}
+          >
+            Let&apos;s take a look at your habits!
+          </Typography>
 
-      <Button
-        variant="contained"
-        color="primary"
-        sx={{ padding: '10px 30px', fontSize: '1rem' }}
-      >
-        Get Started
-      </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              padding: { xs: '8px 20px', sm: '12px 40px' },
+              fontSize: { xs: '0.9rem', sm: '1rem', lg: '1.25rem' },
+            }}
+          >
+            View My Habits
+          </Button>
+        </>
+      ) : (
+        <>
+          <Typography
+            variant="h6"
+            sx={{ marginBottom: { xs: 2, sm: 4 }, color: 'text.primary' }}
+          >
+            Track your habits, stay motivated, and build your future success!
+          </Typography>
+
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              padding: { xs: '8px 20px', sm: '12px 40px' },
+              fontSize: { xs: '0.9rem', sm: '1rem', lg: '1.25rem' },
+            }}
+          >
+            Get Started
+          </Button>
+        </>
+      )}
     </Box>
   );
 };
