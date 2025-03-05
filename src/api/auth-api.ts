@@ -1,17 +1,7 @@
 import { useMemo } from 'react';
 import { axiosInstance } from './api';
 
-interface AuthResponse {
-  message: string;
-  token?: string;
-}
-
-interface User {
-  id: number;
-  email: string;
-  displayName?: string;
-  avatar?: string;
-}
+import { AuthResponse, User } from './interfaces';
 
 const USER_KEY = 'user';
 
@@ -35,10 +25,9 @@ const useAuthApi = () => {
           .catch((error) => Promise.reject(error)),
       getUser: () =>
         axiosInstance
-          .get<User>('/auth/user', { withCredentials: true })
+          .get<{ user: User }>('/auth/user', { withCredentials: true })
           .then((res) => {
-            console.log(res.data);
-            return res.data;
+            return res?.data.user;
           })
           .catch((error) => Promise.reject(error)),
       queryKey: USER_KEY,
