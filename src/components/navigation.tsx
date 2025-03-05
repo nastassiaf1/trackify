@@ -31,11 +31,6 @@ const Navigation = () => {
     setDrawerOpen(open);
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5000/auth/google';
-    setDrawerOpen(false);
-  };
-
   return (
     <Box>
       <AppBar position="sticky" sx={{ boxShadow: 3 }}>
@@ -102,8 +97,7 @@ const Navigation = () => {
           {!user && (
             <ListItemButton
               component="a"
-              href="http://localhost:5000/auth/google"
-              target="_blank"
+              href={`${process.env.REACT_APP_API_URL}/auth/google`}
               sx={{ paddingY: 2 }}
             >
               <LoginIcon sx={{ marginRight: 2, color: 'primary.main' }} />

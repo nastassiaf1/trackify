@@ -1,18 +1,18 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000';
-
 export const axiosInstance = axios.create({
-  baseURL: API_URL,
-  headers: { 'Content-Type': 'application/json' },
+  baseURL: process.env.REACT_APP_API_URL,
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    console.error('API Error:', error.response?.data || error.message);
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
-});
+    return Promise.reject(error);
+  },
+);

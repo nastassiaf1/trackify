@@ -1,6 +1,5 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { axiosInstance } from './api';
-import { useNavigate } from 'react-router-dom';
 
 interface AuthResponse {
   message: string;
@@ -10,55 +9,42 @@ interface AuthResponse {
 interface User {
   id: number;
   email: string;
+  displayName?: string;
+  avatar?: string;
 }
 
-export const useAuthApi = () => {
-  const navigate = useNavigate();
+const USER_KEY = 'user';
 
-  return {
-    register: useMutation<
-      AuthResponse,
-      Error,
-      { email: string; password: string }
-    >({
-      mutationFn: async ({ email, password }) => {
-        const res = await axiosInstance.post<AuthResponse>('/auth/register', {
-          email,
-          password,
-        });
-
-        if (res.data.token) localStorage.setItem('token', res.data.token);
-
-        return res.data;
-      },
+const useAuthApi = () => {
+  return useMemo(
+    () => ({
+      register: (payload: { email: string; password: string }) =>
+        axiosInstance
+          .post<AuthResponse>('/auth/register', payload)
+          .then((res) => res.data)
+          .catch((error) => Promise.reject(error)),
+      login: (payload: { email: string; password: string }) =>
+        axiosInstance
+          .post<AuthResponse>('/auth/login', payload)
+          .then((res) => res.data)
+          .catch((error) => Promise.reject(error)),
+      logout: () =>
+        axiosInstance
+          .post('/auth/logout', {}, { withCredentials: true })
+          .then((res) => res.data)
+          .catch((error) => Promise.reject(error)),
+      getUser: () =>
+        axiosInstance
+          .get<User>('/auth/user', { withCredentials: true })
+          .then((res) => {
+            console.log(res.data);
+            return res.data;
+          })
+          .catch((error) => Promise.reject(error)),
+      queryKey: USER_KEY,
     }),
-    login: useMutation<
-      AuthResponse,
-      Error,
-      { email: string; password: string }
-    >({
-      mutationFn: async ({ email, password }) => {
-        const res = await axiosInstance.post<AuthResponse>('/auth/login', {
-          email,
-          password,
-        });
-
-        if (res.data.token) localStorage.setItem('token', res.data.token);
-
-        return res.data;
-      },
-    }),
-    logout: () => {
-      localStorage.removeItem('token');
-      navigate('/login');
-    },
-    getUser: useQuery<User | null>({
-      queryKey: ['me'],
-      queryFn: async () => {
-        const res = await axiosInstance.get<User>('/auth/me');
-        return res.data;
-      },
-      enabled: !!localStorage.getItem('token'),
-    }),
-  };
+    [],
+  );
 };
+
+export { useAuthApi, USER_KEY };
