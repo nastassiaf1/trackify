@@ -1,3 +1,5 @@
+import { title } from 'process';
+
 const palette = {
   primary: {
     main: '#00796b',
@@ -12,6 +14,7 @@ const palette = {
   text: {
     primary: '#212121',
     secondary: '#757575',
+    title: '#cc8f36',
     black: '#000000',
   },
   error: {

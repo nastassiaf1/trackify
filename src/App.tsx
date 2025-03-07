@@ -4,6 +4,7 @@ import HomePage from './pages/home-page';
 import Navigation from './components/navigation';
 import { AuthProvider } from './context/auth-context';
 import { NotificationProvider } from './context/notification-context';
+import AboutPage from './pages/about/index-page';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
           <Navigation />
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
           </Routes>
         </AuthProvider>
       </NotificationProvider>
