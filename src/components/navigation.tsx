@@ -24,7 +24,7 @@ import { useAuth } from '../context/auth-context';
 
 const Navigation = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, glogin } = useAuth();
   const theme = useTheme();
 
   const toggleDrawer = (open: boolean) => () => {
@@ -95,11 +95,7 @@ const Navigation = () => {
           )}
 
           {!user && (
-            <ListItemButton
-              component="a"
-              href={`${process.env.REACT_APP_API_URL}/auth/google`}
-              sx={{ paddingY: 2 }}
-            >
+            <ListItemButton component="a" onClick={glogin} sx={{ paddingY: 2 }}>
               <LoginIcon sx={{ marginRight: 2, color: 'primary.main' }} />
               <ListItemText primary="Login with Google" />
             </ListItemButton>

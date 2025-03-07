@@ -9,6 +9,7 @@ import {
 import { AuthResponse, User } from 'src/api/interfaces';
 import { queryClient } from '../api/queryClient';
 import { useAuthApi } from '../api/auth-api';
+import { useNotification } from './notification-context';
 
 interface AuthContextType {
   user?: User;
@@ -23,6 +24,7 @@ interface AuthContextType {
     Error,
     { email: string; password: string }
   >;
+  glogin: () => void;
   logout: () => Promise<void>;
 }
 
@@ -31,6 +33,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const authApi = useAuthApi();
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
 
   const { data: user, isLoading } = useQuery({
     queryFn: authApi.getUser,
@@ -42,10 +45,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     mutationFn: authApi.register,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [authApi.queryKey] });
+
       navigate('/');
     },
     onError: (err) => {
-      console.error(err);
+      showNotification(err.message, 'error');
     },
   });
 
@@ -57,28 +61,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       navigate('/');
     },
     onError: (err) => {
-      console.error(err);
+      showNotification(err.message, 'error');
     },
   });
 
   const { mutateAsync: mutateLogout } = useMutation({
     mutationFn: authApi.logout,
     onSuccess: () => {
+      queryClient.setQueryData([authApi.queryKey], null);
+      queryClient.invalidateQueries({ queryKey: [authApi.queryKey] });
+
       navigate('/');
     },
     onError: (err) => {
-      console.error(err);
+      showNotification(err.message, 'error');
     },
   });
+
+  const glogin = () => {
+    window.location.href = `${process.env.REACT_APP_API_URL}/auth/google`;
+  };
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        loading: isLoading,
         register: registerMutation,
         login: loginMutation,
+        glogin,
         logout: mutateLogout,
-        loading: isLoading,
       }}
     >
       {children}
