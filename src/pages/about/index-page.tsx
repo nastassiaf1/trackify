@@ -118,15 +118,17 @@ const AboutPage = () => {
             procrastination.
             <br /> Some days, motivation just isn&apos;t there, and building
             good habits feels like an uphill battle. But you&apos;re not alone
-            in this journey. Our app is designed to be your personal
-            accountability partner—helping you take small, consistent steps
-            toward your goals. Whether you want to develop healthier habits,
-            boost productivity, or simply become a better version of yourself,
-            we’re here to support you. Progress isn’t about perfection - it’s
-            about showing up, even on the tough days. And no matter how many
-            times you stumble, what truly matters is that you keep going. So
-            take a deep breath, set your intentions, and let’s build the future
-            you want—one habit at a time. We believe in you! :){' '}
+            in this journey.
+            <br />
+            <br /> Our app is designed to be your personal accountability
+            partner - helping you take small, consistent steps toward your
+            goals. Whether you want to develop healthier habits, boost
+            productivity, or simply become a better version of yourself, we’re
+            here to support you.Progress isn’t about perfection - it’s about
+            showing up, even on the tough days. And no matter how many times you
+            stumble, what truly matters is that you keep going. So take a deep
+            breath, set your intentions, and let’s build the future you want -
+            one habit at a time. We believe in you! :){' '}
           </Typography>
         </Box>
       </motion.div>
