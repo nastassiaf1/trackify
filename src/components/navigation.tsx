@@ -18,14 +18,16 @@ import HomeIcon from '@mui/icons-material/Home';
 import LoginIcon from '@mui/icons-material/Login';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { Info, StarOutline } from '@mui/icons-material';
+import { Google, Info, StarOutline } from '@mui/icons-material';
 
 import { useAuth } from '../context/auth-context';
+import AuthModal from './auth-modal';
 
 const Navigation = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { user, logout, glogin } = useAuth();
   const theme = useTheme();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);
@@ -95,10 +97,24 @@ const Navigation = () => {
           )}
 
           {!user && (
-            <ListItemButton component="a" onClick={glogin} sx={{ paddingY: 2 }}>
-              <LoginIcon sx={{ marginRight: 2, color: 'primary.main' }} />
-              <ListItemText primary="Login with Google" />
-            </ListItemButton>
+            <>
+              <ListItemButton
+                component="button"
+                onClick={() => setAuthModalOpen(true)}
+                sx={{ paddingY: 2 }}
+              >
+                <LoginIcon sx={{ marginRight: 2, color: 'primary.main' }} />
+                <ListItemText primary="Login with Password" />
+              </ListItemButton>
+              <ListItemButton
+                component="a"
+                onClick={glogin}
+                sx={{ paddingY: 2 }}
+              >
+                <Google sx={{ marginRight: 2, color: 'primary.main' }} />
+                <ListItemText primary="Login with Google" />
+              </ListItemButton>
+            </>
           )}
 
           <ListItemButton
@@ -139,6 +155,8 @@ const Navigation = () => {
           )}
         </List>
       </Drawer>
+
+      <AuthModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </Box>
   );
 };
