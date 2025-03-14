@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Container,
   Typography,
@@ -16,8 +17,41 @@ import {
   Twitter,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import { useMutation } from '@tanstack/react-query';
+import { useContactApi } from 'src/api/contact-api';
+import { useNotification } from 'src/context/notification-context';
 
 const ContactsPage = () => {
+  const { sendMessage } = useContactApi();
+  const { showNotification } = useNotification();
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
+
+  const mutation = useMutation({
+    mutationFn: sendMessage,
+    onSuccess: () => {
+      showNotification('Message sent successfully!');
+
+      setFormData({ name: '', email: '', message: '' });
+    },
+    onError: (err) => {
+      showNotification(err.message, 'error');
+    },
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    mutation.mutate(formData);
+  };
+
   return (
     <Container maxWidth="md" sx={{ mt: 5 }}>
       <motion.div
@@ -44,35 +78,48 @@ const ContactsPage = () => {
             <Typography variant="h5" fontWeight="bold" gutterBottom>
               Send us a message
             </Typography>
-            <TextField
-              label="Your Name"
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField
-              label="Email"
-              type="email"
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField
-              label="Message"
-              multiline
-              rows={4}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ mt: 2 }}
-            >
-              Send Message
-            </Button>
+            <form onSubmit={handleSubmit}>
+              <TextField
+                label="Your Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+              />
+              <TextField
+                label="Email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+              />
+              <TextField
+                label="Message"
+                name="message"
+                multiline
+                rows={4}
+                value={formData.message}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                variant="outlined"
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ mt: 2 }}
+                disabled={mutation.isPending}
+              >
+                {mutation.isPending ? 'Sending...' : 'Send Message'}
+              </Button>
+            </form>
           </Paper>
         </Grid>
 
@@ -87,10 +134,9 @@ const ContactsPage = () => {
             </Box>
             <Box display="flex" alignItems="center" gap={1} mt={2}>
               <Phone color="primary" />
-              <Typography variant="body1">+1 (555) 123-4567</Typography>
+              <Typography variant="body1">+375(29) 132-10-81</Typography>
             </Box>
 
-            {/* Социальные сети */}
             <Box mt={3}>
               <Typography variant="h6" fontWeight="bold">
                 Follow us
