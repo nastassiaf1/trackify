@@ -134,7 +134,7 @@ const ContactsPage = () => {
             </Box>
             <Box display="flex" alignItems="center" gap={1} mt={2}>
               <Phone color="primary" />
-              <Typography variant="body1">+375(29) 132-10-81</Typography>
+              <Typography variant="body1">+375 (29) 132-10-81</Typography>
             </Box>
 
             <Box mt={3}>

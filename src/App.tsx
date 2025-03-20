@@ -6,6 +6,7 @@ import { AuthProvider } from './context/auth-context';
 import { NotificationProvider } from './context/notification-context';
 import AboutPage from './pages/about/index-page';
 import ContactsPage from './pages/contacts/contacts-page';
+import ProfilePage from './pages/profile/profile-page';
 
 const App = () => {
   return (
@@ -17,6 +18,9 @@ const App = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contacts" element={<ContactsPage />} />
+            <Route path="/profile" element={<ProfilePage />}>
+              <Route path="/profile" element={<ProfilePage />} />
+            </Route>
           </Routes>
         </AuthProvider>
       </NotificationProvider>
