@@ -88,7 +88,11 @@ const Navigation = () => {
           </ListItemButton>
 
           {user && (
-            <ListItemButton component={Link} to="/profile" sx={{ paddingY: 2 }}>
+            <ListItemButton
+              component={Link}
+              to={`/profile/${user.id}`}
+              sx={{ paddingY: 2 }}
+            >
               <AccountCircleIcon
                 sx={{ marginRight: 2, color: 'primary.main' }}
               />
