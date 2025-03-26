@@ -7,7 +7,7 @@ import { NotificationProvider } from './context/notification-context';
 import AboutPage from './pages/about/index-page';
 import ContactsPage from './pages/contacts/contacts-page';
 import ProfilePage from './pages/profile/profile-page';
-import BoardPage from './pages/profile/board-page';
+import BoardPage from './pages/profile/board/board-page';
 import NotFoundPage from './components/not-found-page';
 
 const App = () => {
