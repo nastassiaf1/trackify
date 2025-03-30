@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Card,
   CardContent,
@@ -10,11 +9,12 @@ import {
 import { CheckCircle, Edit, Archive } from '@mui/icons-material';
 import { Habit } from 'src/api/interfaces';
 
-interface Props {
+interface HabitCardProps {
   habit: Habit;
+  fullWidth: boolean;
 }
 
-const HabitCard: React.FC<Props> = ({ habit }) => {
+const HabitCard = ({ habit, fullWidth }: HabitCardProps) => {
   const isCompletedToday = habit.completedDates.includes(
     new Date().toISOString().split('T')[0],
   );
@@ -44,7 +44,8 @@ const HabitCard: React.FC<Props> = ({ habit }) => {
           mt={2}
           display="flex"
           alignItems="center"
-          justifyContent="space-between"
+          gap={2}
+          justifyContent="end"
         >
           <Tooltip title="Check as done">
             <IconButton color={isCompletedToday ? 'success' : 'default'}>

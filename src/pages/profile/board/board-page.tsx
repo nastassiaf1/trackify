@@ -1,13 +1,11 @@
+import { useState } from 'react';
 import { Grid, Typography, Box, CircularProgress, Button } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-
 import { useNotification } from 'src/context/notification-context';
 import { useHabitsApi } from 'src/api/habits-api';
-
-import HabitCard from './habit-card';
 import AddHabitDialog from './add-habit-dialog';
-import { useState } from 'react';
+import HabitCardContainer from './habit-card-container';
 
 const HabitBoard = () => {
   const { showNotification } = useNotification();
@@ -69,11 +67,7 @@ const HabitBoard = () => {
       </Box>
       <Grid container spacing={3}>
         {habits?.length ? (
-          habits.map((habit) => (
-            <Grid item xs={12} sm={6} md={4} key={habit.id}>
-              <HabitCard habit={habit} />
-            </Grid>
-          ))
+          <HabitCardContainer habits={habits} />
         ) : (
           <Typography
             variant="body1"
