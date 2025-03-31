@@ -8,6 +8,7 @@ interface HabitCardColumnProps {
   title: CardStatus;
   habits: Habit[];
   droppableId: CardStatus;
+  dragSourceId: CardStatus | null;
   fullWidth?: boolean;
 }
 
@@ -30,8 +31,12 @@ const HabitCardColumn = ({
   title,
   habits,
   droppableId,
+  dragSourceId = null,
   fullWidth = false,
 }: HabitCardColumnProps) => {
+  const isDropDisabled =
+    dragSourceId === CardStatus.ARCHIVED && droppableId !== CardStatus.ARCHIVED;
+
   return (
     <Paper sx={{ p: 2, minHeight: '60vh' }}>
       <Typography
@@ -45,7 +50,7 @@ const HabitCardColumn = ({
         {title}
       </Typography>
 
-      <Droppable droppableId={droppableId}>
+      <Droppable droppableId={droppableId} isDropDisabled={isDropDisabled}>
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
