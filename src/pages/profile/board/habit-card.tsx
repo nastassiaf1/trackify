@@ -30,12 +30,18 @@ const HabitCard = ({ habit, fullWidth }: HabitCardProps) => {
           boxShadow: 6,
           cursor: 'pointer',
         },
+        overflow: 'hidden',
+        height: "320px",
       }}
     >
       <CardContent>
         <Typography variant="h6">{habit.title}</Typography>
         {habit.description && (
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ wordBreak: 'break-word' }}
+          >
             {habit.description}
           </Typography>
         )}

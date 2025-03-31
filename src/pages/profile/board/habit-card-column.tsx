@@ -81,8 +81,8 @@ const HabitCardColumn = ({
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     style={{
-                      marginBottom: 8,
                       ...provided.draggableProps.style,
+                      marginBottom: 8,
                     }}
                   >
                     <HabitCard habit={habit} fullWidth={fullWidth} />
@@ -90,6 +90,21 @@ const HabitCardColumn = ({
                 )}
               </Draggable>
             ))}
+
+            {!habits.length && droppableId === CardStatus.ACTIVE && (
+              <Typography
+                variant="body1"
+                mt={2}
+                sx={{
+                  width: '100%',
+                  fontSize: '1em',
+                  letterSpacing: '1.6px',
+                  textAlign: 'center',
+                }}
+              >
+                There are no active habits
+              </Typography>
+            )}
             {provided.placeholder}
           </div>
         )}

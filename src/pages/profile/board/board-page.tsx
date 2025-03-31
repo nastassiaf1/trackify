@@ -66,21 +66,12 @@ const HabitBoard = () => {
         </Button>
       </Box>
       <Grid container spacing={3}>
-        {habits?.length ? (
-          <HabitCardContainer habits={habits} />
+        {isLoading ? (
+          <Box display="flex" justifyContent="center" mt={4}>
+            <CircularProgress />
+          </Box>
         ) : (
-          <Typography
-            variant="body1"
-            mt={2}
-            sx={{
-              width: '100%',
-              fontSize: '2em',
-              letterSpacing: '1.6px',
-              textAlign: 'center',
-            }}
-          >
-            There are no active habits
-          </Typography>
+          <HabitCardContainer habits={habits || []} />
         )}
       </Grid>
       <AddHabitDialog

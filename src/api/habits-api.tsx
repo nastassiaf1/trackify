@@ -17,14 +17,14 @@ const useHabitsApi = () => {
           .post<Habit>('/habits', data)
           .then((res) => res.data)
           .catch((error) => Promise.reject(error)),
-      markAsCompleted: (habitId: number, date: string): Promise<void> =>
+      markAsCompleted: (habitId: number): Promise<void> =>
         axiosInstance
-          .post(`/habits/${habitId}/complete`, { date })
+          .patch<void>(`/habits/${habitId}`, { isCompleted: true })
           .then((res) => res.data)
           .catch((error) => Promise.reject(error)),
       archiveHabit: (habitId: number): Promise<void> =>
         axiosInstance
-          .post(`/habits/${habitId}/archive`)
+          .patch<void>(`/habits/${habitId}`, { isArchived: true })
           .then((res) => res.data)
           .catch((error) => Promise.reject(error)),
       queryKey: HABITS,

@@ -1,9 +1,13 @@
 import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { Box, FormControlLabel, Grid, Switch } from '@mui/material';
 import { DragDropContext, DragStart, DropResult } from '@hello-pangea/dnd';
 import { Habit } from 'src/api/interfaces';
 import HabitCardColumn from './habit-card-column';
 import { CardStatus } from './constants';
+import { useHabitsApi } from 'src/api/habits-api';
+import { useNotification } from 'src/context/notification-context';
+import { queryClient } from 'src/api/queryClient';
 
 interface HabitCardContainerProps {
   habits: Habit[];
@@ -12,10 +16,40 @@ interface HabitCardContainerProps {
 const HabitCardContainer = ({ habits }: HabitCardContainerProps) => {
   const [showCompleted, setShowCompleted] = useState(false);
   const [dragSource, setDragSource] = useState<CardStatus | null>(null);
+  const habitApi = useHabitsApi();
+  const { showNotification } = useNotification();
 
   const activeHabits = habits.filter((h) => !h.isArchived && !h.isCompleted);
   const archivedHabits = habits.filter((h) => h.isArchived);
   const completedHabits = habits.filter((h) => h.isCompleted);
+
+  const { mutate: archiveMutate, isPending: archivePending } = useMutation<
+    void,
+    Error,
+    number
+  >({
+    mutationFn: (habitId: number) => habitApi.archiveHabit(habitId),
+    onError: () => {
+      showNotification('Failed to archive habit', 'error');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [habitApi.queryKey] });
+    },
+  });
+
+  const { mutate: completeMutate, isPending: completePending } = useMutation<
+    void,
+    Error,
+    number
+  >({
+    mutationFn: (habitId: number) => habitApi.markAsCompleted(habitId),
+    onError: () => {
+      showNotification('Failed to complete habit', 'error');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [habitApi.queryKey] });
+    },
+  });
 
   const onDragStart = (start: DragStart) => {
     setDragSource(start.source.droppableId as CardStatus);
@@ -23,13 +57,22 @@ const HabitCardContainer = ({ habits }: HabitCardContainerProps) => {
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
+
     if (!destination || destination.droppableId === source.droppableId) return;
 
     const from = source.droppableId;
     const to = destination.droppableId;
 
-    if (from === CardStatus.ARCHIVED && to !== CardStatus.ARCHIVED) {
+    if (from === CardStatus.ARCHIVED) {
       return;
+    }
+
+    const habitId = parseInt(draggableId);
+
+    if (to === CardStatus.ARCHIVED) {
+      archiveMutate(habitId);
+    } else if (to === CardStatus.COMPLETED) {
+      completeMutate(habitId);
     }
   };
 
