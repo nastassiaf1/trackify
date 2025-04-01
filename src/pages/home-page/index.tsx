@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/auth-context';
+import AuthModal from 'src/components/auth-modal';
 
 const HomePage = () => {
   const { user } = useAuth();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const displayName = user?.displayName;
   const transformedUserName =
@@ -52,6 +56,8 @@ const HomePage = () => {
               padding: { xs: '8px 20px', sm: '12px 40px' },
               fontSize: { xs: '0.9rem', sm: '1rem', lg: '1.25rem' },
             }}
+            component={Link}
+            to={`/profile/${user.id}/board`}
           >
             View My Habits
           </Button>
@@ -72,11 +78,13 @@ const HomePage = () => {
               padding: { xs: '8px 20px', sm: '12px 40px' },
               fontSize: { xs: '0.9rem', sm: '1rem', lg: '1.25rem' },
             }}
+            onClick={() => setAuthModalOpen(true)}
           >
             Get Started
           </Button>
         </>
       )}
+      <AuthModal open={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </Box>
   );
 };
