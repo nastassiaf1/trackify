@@ -51,7 +51,7 @@ const AddHabitForm = ({ onSuccess }: Props) => {
   };
 
   return (
-    <Stack spacing={2} mt={1}>
+    <Stack spacing={2} mt={1} py={4} px={2}>
       <TextField
         label="Title"
         value={title}
