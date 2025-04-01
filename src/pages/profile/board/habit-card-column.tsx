@@ -1,4 +1,4 @@
-import { Typography, Paper, Card } from '@mui/material';
+import { Typography, Paper } from '@mui/material';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { Habit } from 'src/api/interfaces';
 import HabitCard from './habit-card';
@@ -59,7 +59,7 @@ const HabitCardColumn = ({
               padding: '20px',
               display: 'grid',
               gridTemplateColumns: fullWidth
-                ? 'repeat(auto-fill, minmax(280px, 1fr))'
+                ? 'repeat(auto-fill, minmax(320px, 1fr))'
                 : '1fr',
               gap: '16px',
               transition: 'background-color 0.3s ease-in-out',

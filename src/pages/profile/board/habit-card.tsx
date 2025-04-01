@@ -6,7 +6,7 @@ import {
   Box,
   Tooltip,
 } from '@mui/material';
-import { CheckCircle, Edit, Archive } from '@mui/icons-material';
+import { CheckCircle, Edit, Archive, Height } from '@mui/icons-material';
 import { Habit } from 'src/api/interfaces';
 
 interface HabitCardProps {
@@ -31,19 +31,43 @@ const HabitCard = ({ habit, fullWidth }: HabitCardProps) => {
           cursor: 'pointer',
         },
         overflow: 'hidden',
-        height: "320px",
+        height: '320px',
       }}
     >
-      <CardContent>
+      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
         <Typography variant="h6">{habit.title}</Typography>
         {habit.description && (
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ wordBreak: 'break-word' }}
+          <Tooltip
+            title={habit.description}
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  padding: '18px',
+                  width: '320px',
+                  backgroundColor: '#fff',
+                  color: '#000',
+                  boxShadow: 2,
+                  fontSize: '0.875rem',
+                },
+              },
+            }}
           >
-            {habit.description}
-          </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{
+                display: '-webkit-box',
+                height: '124px',
+                wordBreak: 'break-word',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                '-webkit-line-clamp': '6',
+                '-webkit-box-orient': 'vertical',
+              }}
+            >
+              <span>{habit.description}</span>
+            </Typography>
+          </Tooltip>
         )}
 
         <Box
