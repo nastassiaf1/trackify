@@ -57,6 +57,9 @@ const AddHabitForm = ({ onSuccess }: Props) => {
         value={title}
         fullWidth
         required
+        inputProps={{
+          maxLength: 80,
+        }}
         onChange={(e) => setTitle(e.target.value)}
       />
       <TextField
@@ -64,7 +67,12 @@ const AddHabitForm = ({ onSuccess }: Props) => {
         value={description}
         fullWidth
         multiline
-        rows={2}
+        rows={5}
+        maxRows={5}
+        inputProps={{
+          maxLength: 255,
+        }}
+        required
         onChange={(e) => setDescription(e.target.value)}
       />
       <TextField
