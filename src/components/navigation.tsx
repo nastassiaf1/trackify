@@ -18,6 +18,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import LoginIcon from '@mui/icons-material/Login';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import FilterVintageIcon from '@mui/icons-material/FilterVintage';
 import { Google, Info, StarOutline } from '@mui/icons-material';
 
 import { useAuth } from '../context/auth-context';
@@ -63,6 +64,12 @@ const Navigation = () => {
               to="/"
             >
               TrackiFy
+              <FilterVintageIcon
+                sx={{
+                  marginBottom: '2px',
+                  marginLeft: '4px',
+                }}
+              />
             </Button>
           </Box>
         </Toolbar>
