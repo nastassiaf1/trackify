@@ -32,6 +32,16 @@ const palette = {
       primary: '#ffffff',
     },
   },
+  cards: {
+    variant1: 'ffffff',
+    variant2: '#ffc9d2',
+    variant3: '#e1c9ff',
+    variant4: '#c9cdff',
+    variant5: '#c9ecff',
+    variant6: '#c9ffdc',
+    variant7: '#fdffc9',
+    variant8: '#ffc9c9',
+  },
 };
 
 export default palette;

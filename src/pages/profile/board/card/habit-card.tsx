@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -6,8 +7,10 @@ import {
   Box,
   Tooltip,
 } from '@mui/material';
-import { CheckCircle, Edit, Archive, Height } from '@mui/icons-material';
+import { CheckCircle, Edit, Archive } from '@mui/icons-material';
 import { Habit } from 'src/api/interfaces';
+import ColorSelector from './color-selector';
+import { cardColors, ColorVariant } from './../constants';
 
 interface HabitCardProps {
   habit: Habit;
@@ -15,6 +18,9 @@ interface HabitCardProps {
 }
 
 const HabitCard = ({ habit, fullWidth }: HabitCardProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [color, setColor] = useState<ColorVariant>('variant1');
+
   const isCompletedToday = habit.completedDates.includes(
     new Date().toISOString().split('T')[0],
   );
@@ -22,6 +28,7 @@ const HabitCard = ({ habit, fullWidth }: HabitCardProps) => {
   return (
     <Card
       sx={{
+        height: '320px',
         borderLeft: isCompletedToday
           ? '6px solid green'
           : '6px solid transparent',
@@ -31,11 +38,25 @@ const HabitCard = ({ habit, fullWidth }: HabitCardProps) => {
           cursor: 'pointer',
         },
         overflow: 'hidden',
-        height: '320px',
+        backgroundColor: cardColors[habit.color || 'variant1'],
       }}
     >
       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-        <Typography variant="h6">{habit.title}</Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Typography variant="h6">{habit.title}</Typography>
+          {!habit.isArchived && !habit.isCompleted && (
+            <ColorSelector
+              selectedColor={habit.color || 'variant1'}
+              onSelect={(color) => setColor(color)}
+            />
+          )}
+        </Box>
         {habit.description && (
           <Tooltip
             title={habit.description}
@@ -84,7 +105,7 @@ const HabitCard = ({ habit, fullWidth }: HabitCardProps) => {
           </Tooltip>
 
           <Tooltip title="Edit">
-            <IconButton>
+            <IconButton onClick={() => setIsEditing(true)}>
               <Edit />
             </IconButton>
           </Tooltip>

@@ -1,3 +1,4 @@
+import { ColorVariant } from 'src/pages/profile/board/constants';
 import { FREQUENCY_OPTIONS } from './constants';
 
 export interface AuthResponse {
@@ -29,6 +30,7 @@ export interface Habit {
   isCompleted: boolean;
   completedAt: string | null;
   userId: number;
+  color?: ColorVariant;
 }
 
 export type FrequencyType = (typeof FREQUENCY_OPTIONS)[number]['value'];

@@ -1,7 +1,7 @@
 import { Typography, Paper } from '@mui/material';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { Habit } from 'src/api/interfaces';
-import HabitCard from './habit-card';
+import HabitCard from './card/habit-card';
 import { CardStatus } from './constants';
 
 interface HabitCardColumnProps {
