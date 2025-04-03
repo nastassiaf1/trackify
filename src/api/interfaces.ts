@@ -1,5 +1,4 @@
-import { ColorVariant } from 'src/pages/profile/board/constants';
-import { FREQUENCY_OPTIONS } from './constants';
+import { cardColors, FREQUENCY_OPTIONS, HabitStatus } from './constants';
 
 export interface AuthResponse {
   message: string;
@@ -41,3 +40,10 @@ export type HabitPayload = {
   frequencyType: FrequencyType;
   repeatEveryXDays: number | null;
 };
+
+export interface HabitStatusPayload {
+  habitId: number;
+  status: HabitStatus;
+}
+
+export type ColorVariant = keyof typeof cardColors;

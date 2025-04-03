@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Box, FormControlLabel, Grid, Switch } from '@mui/material';
 import { DragDropContext, DragStart, DropResult } from '@hello-pangea/dnd';
-import { Habit } from 'src/api/interfaces';
+import { Habit, HabitStatusPayload } from 'src/api/interfaces';
 import HabitCardColumn from './habit-card-column';
-import { CardStatus } from './constants';
 import { useHabitsApi } from 'src/api/habits-api';
 import { useNotification } from 'src/context/notification-context';
 import { queryClient } from 'src/api/queryClient';
+import { HabitStatus } from 'src/api/constants';
 
 interface HabitCardContainerProps {
   habits: Habit[];
@@ -15,7 +15,7 @@ interface HabitCardContainerProps {
 
 const HabitCardContainer = ({ habits }: HabitCardContainerProps) => {
   const [showCompleted, setShowCompleted] = useState(false);
-  const [dragSource, setDragSource] = useState<CardStatus | null>(null);
+  const [dragSource, setDragSource] = useState<HabitStatus | null>(null);
   const habitApi = useHabitsApi();
   const { showNotification } = useNotification();
 
@@ -23,36 +23,20 @@ const HabitCardContainer = ({ habits }: HabitCardContainerProps) => {
   const archivedHabits = habits.filter((h) => h.isArchived);
   const completedHabits = habits.filter((h) => h.isCompleted);
 
-  const { mutate: archiveMutate, isPending: archivePending } = useMutation<
-    void,
-    Error,
-    number
-  >({
-    mutationFn: (habitId: number) => habitApi.archiveHabit(habitId),
-    onError: () => {
-      showNotification('Failed to archive habit', 'error');
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [habitApi.queryKey] });
-    },
-  });
-
-  const { mutate: completeMutate, isPending: completePending } = useMutation<
-    void,
-    Error,
-    number
-  >({
-    mutationFn: (habitId: number) => habitApi.markAsCompleted(habitId),
-    onError: () => {
-      showNotification('Failed to complete habit', 'error');
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [habitApi.queryKey] });
-    },
-  });
+  const { mutate: updateStatusMutate, isPending: updateStatusPending } =
+    useMutation<void, Error, HabitStatusPayload>({
+      mutationFn: ({ habitId, status }: HabitStatusPayload) =>
+        habitApi.updateStatus({ habitId, status }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [habitApi.queryKey] });
+      },
+      onError: () => {
+        showNotification('Failed to archive habit', 'error');
+      },
+    });
 
   const onDragStart = (start: DragStart) => {
-    setDragSource(start.source.droppableId as CardStatus);
+    setDragSource(start.source.droppableId as HabitStatus);
   };
 
   const onDragEnd = (result: DropResult) => {
@@ -63,16 +47,18 @@ const HabitCardContainer = ({ habits }: HabitCardContainerProps) => {
     const from = source.droppableId;
     const to = destination.droppableId;
 
-    if (from === CardStatus.ARCHIVED) {
+    if (from === HabitStatus.ARCHIVED) {
       return;
     }
 
     const habitId = parseInt(draggableId);
 
-    if (to === CardStatus.ARCHIVED) {
-      archiveMutate(habitId);
-    } else if (to === CardStatus.COMPLETED) {
-      completeMutate(habitId);
+    if (to === HabitStatus.ARCHIVED) {
+      updateStatusMutate({ habitId, status: HabitStatus.ARCHIVED });
+    } else if (to === HabitStatus.COMPLETED) {
+      updateStatusMutate({ habitId, status: HabitStatus.COMPLETED });
+    } else if (to === HabitStatus.ACTIVE) {
+      updateStatusMutate({ habitId, status: HabitStatus.ACTIVE });
     }
   };
 
@@ -93,9 +79,9 @@ const HabitCardContainer = ({ habits }: HabitCardContainerProps) => {
         <Grid container spacing={2} width="100vw">
           <Grid item xs={12} md={showCompleted ? 4 : 12}>
             <HabitCardColumn
-              title={CardStatus.ACTIVE}
+              title={HabitStatus.ACTIVE}
               habits={activeHabits}
-              droppableId={CardStatus.ACTIVE}
+              droppableId={HabitStatus.ACTIVE}
               dragSourceId={dragSource}
               fullWidth={!showCompleted}
             />
@@ -104,17 +90,17 @@ const HabitCardContainer = ({ habits }: HabitCardContainerProps) => {
             <>
               <Grid item xs={12} md={4}>
                 <HabitCardColumn
-                  title={CardStatus.COMPLETED}
+                  title={HabitStatus.COMPLETED}
                   habits={completedHabits}
-                  droppableId={CardStatus.COMPLETED}
+                  droppableId={HabitStatus.COMPLETED}
                   dragSourceId={dragSource}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
                 <HabitCardColumn
-                  title={CardStatus.ARCHIVED}
+                  title={HabitStatus.ARCHIVED}
                   habits={archivedHabits}
-                  droppableId={CardStatus.ARCHIVED}
+                  droppableId={HabitStatus.ARCHIVED}
                   dragSourceId={dragSource}
                 />
               </Grid>

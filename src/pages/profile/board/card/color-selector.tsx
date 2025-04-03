@@ -1,13 +1,8 @@
 import { useState } from 'react';
-import {
-  Box,
-  Button,
-  Menu,
-  MenuItem,
-  IconButton,
-  Tooltip,
-} from '@mui/material';
-import { cardColors, ColorSelectorProps, ColorVariant } from '../constants';
+import { Box, Menu, MenuItem, IconButton, Tooltip } from '@mui/material';
+import { ColorVariant } from 'src/api/interfaces';
+import { cardColors } from 'src/api/constants';
+import { ColorSelectorProps } from '../constants';
 
 const ColorSelector = ({ selectedColor, onSelect }: ColorSelectorProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -35,11 +30,11 @@ const ColorSelector = ({ selectedColor, onSelect }: ColorSelectorProps) => {
             width: 28,
             height: 28,
             padding: 0,
-            border: '1px solid #ccc',
+            border: '1px solid #a7a7a7',
             background:
               'linear-gradient(90deg, #ffc9d2, #e1c9ff, #c9cdff, #c9ffdc)',
             '&:hover': {
-              borderColor: '#a7a7a7',
+              borderColor: '#818181',
               backgroundColor: selectedColor || '#fff',
             },
           }}

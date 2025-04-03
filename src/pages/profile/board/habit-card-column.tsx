@@ -2,25 +2,25 @@ import { Typography, Paper } from '@mui/material';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { Habit } from 'src/api/interfaces';
 import HabitCard from './card/habit-card';
-import { CardStatus } from './constants';
+import { HabitStatus } from 'src/api/constants';
 
 interface HabitCardColumnProps {
-  title: CardStatus;
+  title: HabitStatus;
   habits: Habit[];
-  droppableId: CardStatus;
-  dragSourceId: CardStatus | null;
+  droppableId: HabitStatus;
+  dragSourceId: HabitStatus | null;
   fullWidth?: boolean;
 }
 
 const getBackgroundColor = (
-  status: CardStatus,
+  status: HabitStatus,
   isDraggingOver: boolean,
 ): string => {
-  if (status === CardStatus.ACTIVE) {
+  if (status === HabitStatus.ACTIVE) {
     return isDraggingOver ? 'rgba(0, 128, 0, 0.2)' : 'rgba(0, 128, 0, 0.05)';
   }
 
-  if (status === CardStatus.COMPLETED || status === CardStatus.ARCHIVED) {
+  if (status === HabitStatus.COMPLETED || status === HabitStatus.ARCHIVED) {
     return isDraggingOver ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 0, 0, 0.05)';
   }
 
@@ -35,7 +35,8 @@ const HabitCardColumn = ({
   fullWidth = false,
 }: HabitCardColumnProps) => {
   const isDropDisabled =
-    dragSourceId === CardStatus.ARCHIVED && droppableId !== CardStatus.ARCHIVED;
+    dragSourceId === HabitStatus.ARCHIVED &&
+    droppableId !== HabitStatus.ARCHIVED;
 
   return (
     <Paper sx={{ p: 2, minHeight: '60vh' }}>
@@ -44,7 +45,7 @@ const HabitCardColumn = ({
         gutterBottom
         sx={{
           fontWeight: 'semibold',
-          color: title === CardStatus.ACTIVE ? 'text.title' : 'text.disabled',
+          color: title === HabitStatus.ACTIVE ? 'text.title' : 'text.disabled',
         }}
       >
         {title}
@@ -91,7 +92,7 @@ const HabitCardColumn = ({
               </Draggable>
             ))}
 
-            {!habits.length && droppableId === CardStatus.ACTIVE && (
+            {!habits.length && droppableId === HabitStatus.ACTIVE && (
               <Typography
                 variant="body1"
                 mt={2}

@@ -8,9 +8,15 @@ import {
   Tooltip,
 } from '@mui/material';
 import { CheckCircle, Edit, Archive } from '@mui/icons-material';
-import { Habit } from 'src/api/interfaces';
+import { useMutation } from '@tanstack/react-query';
+
+import { ColorVariant, Habit } from 'src/api/interfaces';
+import { useHabitsApi } from 'src/api/habits-api';
+import { cardColors } from 'src/api/constants';
+import { queryClient } from 'src/api/queryClient';
+import { useNotification } from 'src/context/notification-context';
+
 import ColorSelector from './color-selector';
-import { cardColors, ColorVariant } from './../constants';
 
 interface HabitCardProps {
   habit: Habit;
@@ -19,7 +25,19 @@ interface HabitCardProps {
 
 const HabitCard = ({ habit, fullWidth }: HabitCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [color, setColor] = useState<ColorVariant>('variant1');
+  const habitApi = useHabitsApi();
+  const { showNotification } = useNotification();
+
+  const { mutate: updaeColor } = useMutation<void, Error, ColorVariant>({
+    mutationFn: (color: ColorVariant) =>
+      habitApi.updateHabit(habit.id, { color }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [habitApi.queryKey] });
+    },
+    onError: () => {
+      showNotification('Failed to archive habit', 'error');
+    },
+  });
 
   const isCompletedToday = habit.completedDates.includes(
     new Date().toISOString().split('T')[0],
@@ -53,7 +71,7 @@ const HabitCard = ({ habit, fullWidth }: HabitCardProps) => {
           {!habit.isArchived && !habit.isCompleted && (
             <ColorSelector
               selectedColor={habit.color || 'variant1'}
-              onSelect={(color) => setColor(color)}
+              onSelect={(color) => updaeColor(color)}
             />
           )}
         </Box>

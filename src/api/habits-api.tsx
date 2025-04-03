@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { axiosInstance } from './api';
-import { Habit, HabitPayload } from './interfaces';
+import { Habit, HabitPayload, HabitStatusPayload } from './interfaces';
 
 const HABITS = 'habits';
 
@@ -17,16 +17,14 @@ const useHabitsApi = () => {
           .post<Habit>('/habits', data)
           .then((res) => res.data)
           .catch((error) => Promise.reject(error)),
-      markAsCompleted: (habitId: number): Promise<void> =>
+      updateStatus: ({ habitId, status }: HabitStatusPayload): Promise<void> =>
         axiosInstance
-          .patch<void>(`/habits/${habitId}`, { isCompleted: true })
-          .then((res) => res.data)
-          .catch((error) => Promise.reject(error)),
-      archiveHabit: (habitId: number): Promise<void> =>
+          .patch<void>(`/habits/${habitId}`, {}, { params: { status } })
+          .then((res) => res.data),
+      updateHabit: (habitId: number, updates: Partial<Habit>): Promise<void> =>
         axiosInstance
-          .patch<void>(`/habits/${habitId}`, { isArchived: true })
-          .then((res) => res.data)
-          .catch((error) => Promise.reject(error)),
+          .patch<void>(`/habits/${habitId}`, updates)
+          .then((res) => res.data),
       queryKey: HABITS,
     }),
     [],
