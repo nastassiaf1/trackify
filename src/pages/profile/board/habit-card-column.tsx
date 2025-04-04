@@ -1,4 +1,5 @@
-import { Typography, Paper } from '@mui/material';
+import { Typography, Paper, Tooltip, IconButton } from '@mui/material';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { Habit } from 'src/api/interfaces';
 import HabitCard from './card/habit-card';
@@ -53,8 +54,36 @@ const HabitCardColumn = ({
         }}
       >
         {title}
+        <Tooltip
+          title={
+            title === HabitStatus.ACTIVE
+              ? 'Habits you are currently building'
+              : title === HabitStatus.COMPLETED
+                ? 'Habits you have successfully formed'
+                : 'Archived habits are no longer active or recoverable'
+          }
+          arrow
+          placement="right"
+        >
+          <IconButton
+            sx={{
+              marginBottom: 0.5,
+              marginLeft: 0.5,
+              p: 0.5,
+              '& svg': {
+                color: '#d3d2d2',
+                transition: 'color 0.3s, filter 0.3s',
+              },
+              '&:hover svg': {
+                color: '#ffe16e',
+                filter: 'drop-shadow(0 0 6pxrgb(255, 233, 106))',
+              },
+            }}
+          >
+            <LightbulbIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
       </Typography>
-
       <Droppable droppableId={droppableId} isDropDisabled={isDisabled}>
         {(provided, snapshot) => (
           <div
