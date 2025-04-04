@@ -21,9 +21,10 @@ import ColorSelector from './color-selector';
 interface HabitCardProps {
   habit: Habit;
   fullWidth: boolean;
+  disabled: boolean;
 }
 
-const HabitCard = ({ habit, fullWidth }: HabitCardProps) => {
+const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const habitApi = useHabitsApi();
   const { showNotification } = useNotification();
@@ -56,7 +57,9 @@ const HabitCard = ({ habit, fullWidth }: HabitCardProps) => {
           cursor: 'pointer',
         },
         overflow: 'hidden',
-        backgroundColor: cardColors[habit.color || 'variant1'],
+        backgroundColor: disabled
+          ? '#fff'
+          : cardColors[habit.color || 'variant1'],
       }}
     >
       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>

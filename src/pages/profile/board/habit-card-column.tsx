@@ -20,8 +20,12 @@ const getBackgroundColor = (
     return isDraggingOver ? 'rgba(0, 128, 0, 0.2)' : 'rgba(0, 128, 0, 0.05)';
   }
 
-  if (status === HabitStatus.COMPLETED || status === HabitStatus.ARCHIVED) {
+  if (status === HabitStatus.COMPLETED) {
     return isDraggingOver ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 0, 0, 0.05)';
+  }
+
+  if (status === HabitStatus.ARCHIVED) {
+    return 'rgba(198, 198, 198, 0.15)';
   }
 
   return 'transparent';
@@ -34,7 +38,7 @@ const HabitCardColumn = ({
   dragSourceId = null,
   fullWidth = false,
 }: HabitCardColumnProps) => {
-  const isDropDisabled =
+  const isDisabled =
     dragSourceId === HabitStatus.ARCHIVED &&
     droppableId !== HabitStatus.ARCHIVED;
 
@@ -51,7 +55,7 @@ const HabitCardColumn = ({
         {title}
       </Typography>
 
-      <Droppable droppableId={droppableId} isDropDisabled={isDropDisabled}>
+      <Droppable droppableId={droppableId} isDropDisabled={isDisabled}>
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
@@ -75,6 +79,7 @@ const HabitCardColumn = ({
                 key={habit.id.toString()}
                 draggableId={habit.id.toString()}
                 index={index}
+                isDragDisabled={title === HabitStatus.ARCHIVED}
               >
                 {(provided) => (
                   <div
@@ -86,7 +91,11 @@ const HabitCardColumn = ({
                       marginBottom: 8,
                     }}
                   >
-                    <HabitCard habit={habit} fullWidth={fullWidth} />
+                    <HabitCard
+                      habit={habit}
+                      fullWidth={fullWidth}
+                      disabled={title === HabitStatus.ARCHIVED}
+                    />
                   </div>
                 )}
               </Draggable>
