@@ -1,8 +1,6 @@
-import { title } from 'process';
-
 const palette = {
   primary: {
-    main: '#00796b',
+    main: '#7480ae',
   },
   secondary: {
     main: '#ffb74d',
@@ -15,6 +13,7 @@ const palette = {
     primary: '#212121',
     secondary: '#757575',
     title: '#cc8f36',
+    dark: '#373737',
     black: '#000000',
   },
   error: {

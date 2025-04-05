@@ -4,10 +4,21 @@ import palette from './palette';
 export type AppTheme = Theme;
 export type AppThemeOptions = ThemeOptions;
 
+const fontStack = [
+  'system-ui',
+  '-apple-system',
+  'BlinkMacSystemFont',
+  '"Segoe UI"',
+  'Roboto',
+  '"Helvetica Neue"',
+  'Arial',
+  'sans-serif',
+].join(', ');
+
 const theme: AppTheme = createTheme({
   palette: palette,
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: fontStack,
     h1: {
       fontSize: '2.5rem',
       fontWeight: 600,

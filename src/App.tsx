@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import { Box } from '@mui/material';
 
 import HomePage from './pages/home-page';
 import Navigation from './components/navigation';
@@ -12,24 +13,26 @@ import NotFoundPage from './components/not-found-page';
 
 const App = () => {
   return (
-    <div>
+    <Box>
       <NotificationProvider>
         <AuthProvider>
           <Navigation />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contacts" element={<ContactsPage />} />
-            <Route path="/profile">
-              <Route path=":userId" element={<ProfilePage />} />
-              <Route path=":userId/board" element={<BoardPage />} />
-              <Route path="settings" element={<ProfilePage />} />
-            </Route>
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+          <Box>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contacts" element={<ContactsPage />} />
+              <Route path="/profile">
+                <Route path=":userId" element={<ProfilePage />} />
+                <Route path=":userId/board" element={<BoardPage />} />
+                <Route path="settings" element={<ProfilePage />} />
+              </Route>
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Box>
         </AuthProvider>
       </NotificationProvider>
-    </div>
+    </Box>
   );
 };
 

@@ -3,6 +3,7 @@ import { Box, Button, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/auth-context';
 import AuthModal from 'src/components/auth-modal';
+import { navigationHeight } from 'src/components/constants';
 
 const HomePage = () => {
   const { user } = useAuth();
@@ -16,52 +17,46 @@ const HomePage = () => {
     <Box
       sx={{
         position: 'relative',
-        backgroundImage: 'url(images/leaves.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        minHeight: '100vh',
+        backgroundImage: 'url(images/leaves.png)',
+        backgroundSize: 'auto 54vh',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'left calc(100% + 26px)',
+        minHeight: `calc(100vh - ${navigationHeight})`,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
+        alignItems: 'end',
+        textAlign: 'end',
         color: 'white',
-        padding: 4,
+        paddingX: 4,
       }}
     >
       <Typography
         variant="h2"
         sx={{
           fontWeight: 'bold',
-          marginBottom: { xs: 1, sm: 2 },
+          marginBottom: { xs: 4, sm: 6 },
           fontSize: { xs: '2rem', sm: '3rem', md: '4rem' },
-          color: 'text.black',
+          color: '#67bb8f',
         }}
       >
-        Welcome to Habit Tracker {transformedUserName}
+        Welcome to Habit Tracker
+        <br />
+        {transformedUserName}
       </Typography>
       {user ? (
-        <>
-          <Typography
-            variant="h5"
-            sx={{ marginBottom: { xs: 2, sm: 4 }, color: 'text.primary' }}
-          >
-            Let&apos;s take a look at your habits!
-          </Typography>
-
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{
-              padding: { xs: '8px 20px', sm: '12px 40px' },
-              fontSize: { xs: '0.9rem', sm: '1rem', lg: '1.25rem' },
-            }}
-            component={Link}
-            to={`/profile/${user.id}/board`}
-          >
-            View My Habits
-          </Button>
-        </>
+        <Button
+          variant="contained"
+          color="warning"
+          sx={{
+            padding: { xs: '8px 20px', sm: '12px 40px' },
+            fontSize: { xs: '0.9rem', sm: '1rem', lg: '1.25rem' },
+          }}
+          component={Link}
+          to={`/profile/${user.id}/board`}
+        >
+          View My Habits
+        </Button>
       ) : (
         <>
           <Typography
@@ -73,7 +68,7 @@ const HomePage = () => {
 
           <Button
             variant="contained"
-            color="primary"
+            color="warning"
             sx={{
               padding: { xs: '8px 20px', sm: '12px 40px' },
               fontSize: { xs: '0.9rem', sm: '1rem', lg: '1.25rem' },

@@ -23,6 +23,7 @@ import { Google, Info, StarOutline } from '@mui/icons-material';
 
 import { useAuth } from '../context/auth-context';
 import AuthModal from './auth-modal';
+import { navigationHeight } from './constants';
 
 const Navigation = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -35,7 +36,7 @@ const Navigation = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ height: navigationHeight }}>
       <AppBar position="sticky" sx={{ boxShadow: 3 }}>
         <Toolbar
           sx={{
