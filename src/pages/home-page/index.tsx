@@ -20,7 +20,7 @@ const HomePage = () => {
         backgroundImage: 'url(images/leaves.png)',
         backgroundSize: 'auto 54vh',
         backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'left calc(100% + 26px)',
+        backgroundPosition: 'left bottom',
         minHeight: `calc(100vh - ${navigationHeight})`,
         display: 'flex',
         flexDirection: 'column',
