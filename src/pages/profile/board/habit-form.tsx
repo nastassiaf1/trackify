@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { TextField, Button, Stack, MenuItem, Collapse } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import { useHabitsApi } from 'src/api/habits-api';
@@ -7,26 +7,42 @@ import { FrequencyType, Habit, HabitPayload } from 'src/api/interfaces';
 import { FREQUENCY_OPTIONS } from 'src/api/constants';
 
 interface Props {
-  onSuccess: () => void;
+  onSuccess?: () => void;
+  habit?: Habit;
 }
 
-const AddHabitForm = ({ onSuccess }: Props) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [frequencyType, setFrequencyType] = useState<FrequencyType>('daily');
-  const [repeatEveryXDays, setRepeatEveryXDays] = useState<number | null>(null);
+const HabitForm = ({ onSuccess, habit }: Props) => {
+  const [title, setTitle] = useState(habit?.title || '');
+  const [description, setDescription] = useState(habit?.description || '');
+  const [frequencyType, setFrequencyType] = useState<FrequencyType>(
+    habit?.frequencyType || 'daily',
+  );
+  const [repeatEveryXDays, setRepeatEveryXDays] = useState<number | null>(
+    habit?.repeatEveryXDays || null,
+  );
   const habitApi = useHabitsApi();
   const { showNotification } = useNotification();
 
+  const isNew = !habit?.id;
+
   const { mutate, isPending } = useMutation<Habit, Error, HabitPayload>({
-    mutationFn: (data: HabitPayload) => habitApi.addHabit(data),
+    mutationFn: (data: HabitPayload) => {
+      return isNew
+        ? habitApi.addHabit(data)
+        : habitApi.updateHabit(habit.id, data);
+    },
     onError: () => {
-      showNotification('Failed to add habit', 'error');
+      showNotification(`Failed to ${isNew ? 'add' : 'update'} habit`, 'error');
     },
     onSuccess: () => {
-      showNotification('The habit was added to the board', 'success');
+      showNotification(
+        `The habit was ${isNew ? 'added' : 'updated'} to the board`,
+        'success',
+      );
 
-      onSuccess();
+      if (onSuccess) {
+        onSuccess();
+      }
     },
   });
 
@@ -106,10 +122,10 @@ const AddHabitForm = ({ onSuccess }: Props) => {
         onClick={handleSubmit}
         disabled={isPending || !title}
       >
-        Add Habit
+        {isNew ? 'Add' : 'Update'}
       </Button>
     </Stack>
   );
 };
 
-export default AddHabitForm;
+export default HabitForm;

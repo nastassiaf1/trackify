@@ -17,6 +17,7 @@ import { queryClient } from 'src/api/queryClient';
 import { useNotification } from 'src/context/notification-context';
 
 import ColorSelector from './color-selector';
+import HabitCardEditModal from './habit-card-edit-dialog';
 
 interface HabitCardProps {
   habit: Habit;
@@ -25,11 +26,11 @@ interface HabitCardProps {
 }
 
 const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
-  const [isEditing, setIsEditing] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const habitApi = useHabitsApi();
   const { showNotification } = useNotification();
 
-  const { mutate: updaeColor } = useMutation<void, Error, ColorVariant>({
+  const { mutate: updaeColor } = useMutation<Habit, Error, ColorVariant>({
     mutationFn: (color: ColorVariant) =>
       habitApi.updateHabit(habit.id, { color }),
     onSuccess: () => {
@@ -149,7 +150,7 @@ const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
           </Tooltip>
 
           <Tooltip title="Edit">
-            <IconButton onClick={() => setIsEditing(true)}>
+            <IconButton onClick={() => setOpenDialog(true)}>
               <Edit />
             </IconButton>
           </Tooltip>
@@ -168,6 +169,15 @@ const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
           </Tooltip>
         </Box>
       </CardContent>
+      <HabitCardEditModal
+        open={openDialog}
+        habit={habit}
+        onClose={() => setOpenDialog(false)}
+        onSuccess={() => {
+          queryClient.invalidateQueries({ queryKey: [habitApi.queryKey] });
+          setOpenDialog(false);
+        }}
+      />
     </Card>
   );
 };

@@ -1,32 +1,39 @@
 import { Close } from '@mui/icons-material';
 import {
   Box,
-  Button,
-  Collapse,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   IconButton,
-  TextField,
-  Typography,
 } from '@mui/material';
 import { Habit } from 'src/api/interfaces';
+import HabitForm from '../habit-form';
 
 interface HabitCardEditModalProps {
   open: boolean;
+  habit: Habit;
   onClose: () => void;
-  habitData: Habit;
+  onSuccess?: () => void;
 }
 
 const HabitCardEditModal = ({
   open,
+  habit,
   onClose,
-  habitData,
+  onSuccess,
 }: HabitCardEditModalProps) => {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle>
+    <Dialog open={open} fullWidth onClose={onClose}>
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          fontWeight: 'bold',
+          color: 'orange',
+        }}
+      >
         Change your Habit
         <IconButton
           aria-label="close"
@@ -36,12 +43,10 @@ const HabitCardEditModal = ({
           <Close />
         </IconButton>
       </DialogTitle>
+      <Divider />
       <DialogContent>
-        <Box display="flex" flexDirection="column" gap={2} mt={2}></Box>
+        <HabitForm onSuccess={onSuccess} habit={habit} />
       </DialogContent>
-      <DialogActions>
-        <Button color="primary">Save</Button>
-      </DialogActions>
     </Dialog>
   );
 };

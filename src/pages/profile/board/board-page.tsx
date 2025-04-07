@@ -35,27 +35,15 @@ const HabitBoard = () => {
   }
 
   return (
-    <Box padding={4}>
+    <Box padding={4} maxWidth="100vw">
       <Box
         display="flex"
         justifyContent="space-between"
-        alignItems="center"
+        alignItems="end"
         flexDirection="column"
         gap={4}
         mb={12}
       >
-        <Typography
-          variant="h4"
-          gutterBottom
-          sx={{
-            fontWeight: 'bold',
-            color: 'text.title',
-            letterSpacing: 1,
-            textAlign: 'center',
-          }}
-        >
-          My Habits
-        </Typography>
         <Button
           variant="contained"
           color="warning"

@@ -6,7 +6,7 @@ import {
   Divider,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import AddHabitForm from './add-habit-form';
+import HabitForm from './habit-form';
 
 interface Props {
   open: boolean;
@@ -33,7 +33,7 @@ const AddHabitDialog = ({ open, onClose, onSuccess }: Props) => {
       </DialogTitle>
       <Divider />
       <DialogContent>
-        <AddHabitForm onSuccess={onSuccess} />
+        <HabitForm onSuccess={onSuccess} />
       </DialogContent>
     </Dialog>
   );

@@ -23,17 +23,20 @@ const HabitCardContainer = ({ habits }: HabitCardContainerProps) => {
   const archivedHabits = habits.filter((h) => h.isArchived);
   const completedHabits = habits.filter((h) => h.isCompleted);
 
-  const { mutate: updateStatusMutate, isPending: updateStatusPending } =
-    useMutation<void, Error, HabitStatusPayload>({
-      mutationFn: ({ habitId, status }: HabitStatusPayload) =>
-        habitApi.updateStatus({ habitId, status }),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [habitApi.queryKey] });
-      },
-      onError: () => {
-        showNotification('Failed to archive habit', 'error');
-      },
-    });
+  const { mutate: updateStatusMutate } = useMutation<
+    void,
+    Error,
+    HabitStatusPayload
+  >({
+    mutationFn: ({ habitId, status }: HabitStatusPayload) =>
+      habitApi.updateStatus({ habitId, status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [habitApi.queryKey] });
+    },
+    onError: () => {
+      showNotification('Failed to archive habit', 'error');
+    },
+  });
 
   const onDragStart = (start: DragStart) => {
     setDragSource(start.source.droppableId as HabitStatus);

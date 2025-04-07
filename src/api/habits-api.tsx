@@ -21,9 +21,9 @@ const useHabitsApi = () => {
         axiosInstance
           .patch<void>(`/habits/${habitId}`, {}, { params: { status } })
           .then((res) => res.data),
-      updateHabit: (habitId: number, updates: Partial<Habit>): Promise<void> =>
+      updateHabit: (habitId: number, updates: Partial<Habit>): Promise<Habit> =>
         axiosInstance
-          .patch<void>(`/habits/${habitId}`, updates)
+          .patch<Habit>(`/habits/${habitId}`, updates)
           .then((res) => res.data),
       queryKey: HABITS,
     }),
