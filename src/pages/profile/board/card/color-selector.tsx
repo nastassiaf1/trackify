@@ -60,7 +60,10 @@ const ColorSelector = ({ selectedColor, onSelect }: ColorSelectorProps) => {
                     transition: '0.2s',
                     '&:hover': {
                       borderColor: '#a7a7a7',
-                      backgroundColor: value || '#fff',
+                      backgroundColor: value,
+                    },
+                    '&.Mui-disabled': {
+                      backgroundColor: value,
                     },
                   }}
                   disabled={selectedColor === key}
