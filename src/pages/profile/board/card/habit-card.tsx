@@ -10,9 +10,9 @@ import {
 import { CheckCircle, Edit, Archive } from '@mui/icons-material';
 import { useMutation } from '@tanstack/react-query';
 
-import { ColorVariant, Habit } from 'src/api/interfaces';
+import { ColorVariant, Habit, HabitStatusPayload } from 'src/api/interfaces';
 import { useHabitsApi } from 'src/api/habits-api';
-import { cardColors } from 'src/api/constants';
+import { cardColors, HabitStatus } from 'src/api/constants';
 import { queryClient } from 'src/api/queryClient';
 import { useNotification } from 'src/context/notification-context';
 
@@ -32,6 +32,21 @@ const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
   const { mutate: updaeColor } = useMutation<void, Error, ColorVariant>({
     mutationFn: (color: ColorVariant) =>
       habitApi.updateHabit(habit.id, { color }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [habitApi.queryKey] });
+    },
+    onError: () => {
+      showNotification('Failed to archive habit', 'error');
+    },
+  });
+
+  const { mutate: updateStatusMutate } = useMutation<
+    void,
+    Error,
+    HabitStatusPayload
+  >({
+    mutationFn: ({ habitId, status }: HabitStatusPayload) =>
+      habitApi.updateStatus({ habitId, status }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [habitApi.queryKey] });
     },
@@ -120,7 +135,15 @@ const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
           justifyContent="end"
         >
           <Tooltip title="Check as done">
-            <IconButton color={isCompletedToday ? 'success' : 'default'}>
+            <IconButton
+              color={isCompletedToday ? 'success' : 'default'}
+              onClick={() =>
+                updateStatusMutate({
+                  habitId: habit.id,
+                  status: HabitStatus.COMPLETED,
+                })
+              }
+            >
               <CheckCircle />
             </IconButton>
           </Tooltip>
@@ -132,7 +155,14 @@ const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
           </Tooltip>
 
           <Tooltip title="Archive">
-            <IconButton>
+            <IconButton
+              onClick={() =>
+                updateStatusMutate({
+                  habitId: habit.id,
+                  status: HabitStatus.ARCHIVED,
+                })
+              }
+            >
               <Archive />
             </IconButton>
           </Tooltip>
