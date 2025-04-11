@@ -12,6 +12,11 @@ const useHabitsApi = () => {
           .get('/habits')
           .then((res) => res.data)
           .catch((error) => Promise.reject(error)),
+      getHabitById: ({ habitId }: { habitId: number }): Promise<Habit> =>
+        axiosInstance
+          .get(`/habits/${habitId}`)
+          .then((res) => res.data)
+          .catch((error) => Promise.reject(error)),
       addHabit: (data: HabitPayload) =>
         axiosInstance
           .post<Habit>('/habits', data)

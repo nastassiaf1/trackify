@@ -6,9 +6,18 @@ import {
   IconButton,
   Box,
   Tooltip,
+  Menu,
+  MenuItem,
+  Button,
 } from '@mui/material';
-import { CheckCircle, Edit, Archive } from '@mui/icons-material';
+import {
+  CheckCircleOutlined,
+  EditOutlined,
+  ArchiveOutlined,
+} from '@mui/icons-material';
 import { useMutation } from '@tanstack/react-query';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 import { ColorVariant, Habit, HabitStatusPayload } from 'src/api/interfaces';
 import { useHabitsApi } from 'src/api/habits-api';
@@ -17,7 +26,7 @@ import { queryClient } from 'src/api/queryClient';
 import { useNotification } from 'src/context/notification-context';
 
 import ColorSelector from './color-selector';
-import HabitCardEditModal from './habit-card-edit-dialog';
+import HabitCardEditOutlinedModal from './habit-card-edit-dialog';
 
 interface HabitCardProps {
   habit: Habit;
@@ -27,6 +36,9 @@ interface HabitCardProps {
 
 const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
   const [openDialog, setOpenDialog] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const openMenu = Boolean(anchorEl);
+
   const habitApi = useHabitsApi();
   const { showNotification } = useNotification();
 
@@ -60,6 +72,46 @@ const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
     new Date().toISOString().split('T')[0],
   );
 
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleEditCard = () => {
+    setOpenDialog(true);
+    handleCloseMenu();
+  };
+
+  const handleCheckAsDone = () => {
+    updateStatusMutate({
+      habitId: habit.id,
+      status: HabitStatus.COMPLETED,
+    });
+
+    handleCloseMenu();
+  };
+
+  const handleArchiveCard = () => {
+    updateStatusMutate({
+      habitId: habit.id,
+      status: HabitStatus.ARCHIVED,
+    });
+
+    handleCloseMenu();
+  };
+
+  const handleCardClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+
+    window.open(`/habits/${habit.id}`, '_blank');
+  };
+
   return (
     <Card
       sx={{
@@ -86,12 +138,62 @@ const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
             justifyContent: 'space-between',
           }}
         >
-          <Typography variant="h6">{habit.title}</Typography>
-          {!habit.isArchived && !habit.isCompleted && (
-            <ColorSelector
-              selectedColor={habit.color || 'variant1'}
-              onSelect={(color) => updaeColor(color)}
-            />
+          <Box display={'flex'} gap={1}>
+            <Typography variant="h6" onClick={handleCardClick}>
+              {habit.title}
+            </Typography>
+            <Tooltip title="View details">
+              <IconButton sx={{ marginTop: '-2px' }} onClick={handleCardClick}>
+                <VisibilityOutlinedIcon fontSize="medium" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+
+          {!habit.isArchived && (
+            <>
+              <IconButton
+                aria-label="more"
+                id="long-button"
+                aria-controls={openMenu ? 'long-menu' : undefined}
+                aria-expanded={openMenu ? 'true' : undefined}
+                aria-haspopup="true"
+                onClick={handleOpenMenu}
+                onMouseDown={(e) => e.stopPropagation()}
+              >
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                open={openMenu}
+                onClose={handleCloseMenu}
+                PaperProps={{
+                  style: {
+                    maxHeight: 200,
+                    width: '200px',
+                  },
+                }}
+              >
+                <MenuItem onClick={handleCheckAsDone}>
+                  <CheckCircleOutlined
+                    sx={{ marginRight: 1.5, color: 'primary.main' }}
+                  />
+                  Check as done
+                </MenuItem>
+                <MenuItem onClick={handleEditCard}>
+                  <EditOutlined
+                    sx={{ marginRight: 1.5, color: 'primary.main' }}
+                  />
+                  Edit
+                </MenuItem>
+                <MenuItem onClick={handleArchiveCard}>
+                  <ArchiveOutlined
+                    sx={{ marginRight: 1.5, color: 'primary.main' }}
+                  />
+                  Archive
+                </MenuItem>
+              </Menu>
+            </>
           )}
         </Box>
         {habit.description && (
@@ -128,48 +230,23 @@ const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
           </Tooltip>
         )}
 
-        <Box
-          mt={2}
-          display="flex"
-          alignItems="center"
-          gap={2}
-          justifyContent="end"
-        >
-          <Tooltip title="Check as done">
-            <IconButton
-              color={isCompletedToday ? 'success' : 'default'}
-              onClick={() =>
-                updateStatusMutate({
-                  habitId: habit.id,
-                  status: HabitStatus.COMPLETED,
-                })
-              }
-            >
-              <CheckCircle />
-            </IconButton>
-          </Tooltip>
-
-          <Tooltip title="Edit">
-            <IconButton onClick={() => setOpenDialog(true)}>
-              <Edit />
-            </IconButton>
-          </Tooltip>
-
-          <Tooltip title="Archive">
-            <IconButton
-              onClick={() =>
-                updateStatusMutate({
-                  habitId: habit.id,
-                  status: HabitStatus.ARCHIVED,
-                })
-              }
-            >
-              <Archive />
-            </IconButton>
-          </Tooltip>
-        </Box>
+        {!habit.isArchived && !habit.isCompleted && (
+          <Box
+            mt={2}
+            display="flex"
+            alignItems="center"
+            gap={2}
+            padding={1}
+            justifyContent="end"
+          >
+            <ColorSelector
+              selectedColor={habit.color || 'variant1'}
+              onSelect={(color) => updaeColor(color)}
+            />
+          </Box>
+        )}
       </CardContent>
-      <HabitCardEditModal
+      <HabitCardEditOutlinedModal
         open={openDialog}
         habit={habit}
         onClose={() => setOpenDialog(false)}
