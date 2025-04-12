@@ -12,11 +12,11 @@ import {
 import Calendar from 'react-calendar';
 import { format } from 'date-fns';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import 'react-calendar/dist/Calendar.css';
 
 import { useHabitsApi } from 'src/api/habits-api';
 import { queryClient } from 'src/api/queryClient';
 
+import 'react-calendar/dist/Calendar.css';
 import './habit-detail-calendar.css';
 
 const HabitDetailPage = () => {

@@ -10,7 +10,7 @@ import ContactsPage from './pages/contacts/contacts-page';
 import ProfilePage from './pages/profile/profile-page';
 import BoardPage from './pages/profile/board/board-page';
 import NotFoundPage from './components/not-found-page';
-import HabitDetailPage from './pages/profile/habit-progress/habit-detail-page';
+import HabitDetailPage from './pages/habit-progress/habit-detail-page';
 
 const App = () => {
   return (
