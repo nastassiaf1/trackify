@@ -41,6 +41,11 @@ const palette = {
     variant7: '#fdffc9',
     variant8: '#ffc9c9',
   },
+  highlight: {
+    success: 'rgba(0, 128, 0, 0.05)',
+    error: 'rgba(255, 0, 0, 0.05)',
+    disabled: 'rgba(183, 183, 187, 0.05)',
+  },
 };
 
 export default palette;

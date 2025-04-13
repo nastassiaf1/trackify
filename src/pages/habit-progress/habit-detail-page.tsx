@@ -8,32 +8,40 @@ import {
   CircularProgress,
   Paper,
   useTheme,
+  Tooltip,
 } from '@mui/material';
 import Calendar from 'react-calendar';
-import { format } from 'date-fns';
+import { format, isBefore } from 'date-fns';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import StarIcon from '@mui/icons-material/Star';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
 import { useHabitsApi } from 'src/api/habits-api';
 import { queryClient } from 'src/api/queryClient';
 
 import 'react-calendar/dist/Calendar.css';
 import './habit-detail-calendar.css';
+import { generateKeyDates } from './helpers';
+import { HabitDayPayload } from 'src/api/interfaces';
 
 const HabitDetailPage = () => {
   const calendarRef = useRef<HTMLDivElement | null>(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [activeStartDate, setActiveStartDate] = useState(new Date());
-  const { habitId } = useParams<{ habitId: string }>();
+  const { habitId: habitIdParam } = useParams<{ habitId: string }>();
   const habitApi = useHabitsApi();
   const theme = useTheme();
 
+  const habitId = Number(habitIdParam);
+
   const { data: habit, isLoading } = useQuery({
     queryKey: ['habit', habitId],
-    queryFn: () => habitApi.getHabitById({ habitId: Number(habitId) }),
+    queryFn: () => habitApi.getHabitById({ habitId: habitId }),
   });
 
   const markCompletedMutation = useMutation({
-    mutationFn: () => Promise.resolve(),
+    mutationFn: (dayData: HabitDayPayload) => habitApi.markDayAsDone(dayData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['habit', habitId] });
       queryClient.invalidateQueries({ queryKey: [habitApi.queryKey] });
@@ -47,6 +55,9 @@ const HabitDetailPage = () => {
       </Box>
     );
   }
+
+  const keyDays = generateKeyDates(habit);
+  const createdAtDate = new Date(habit.createdAt);
 
   const completedDates = habit.completedDates.map((d) =>
     format(new Date(d), 'yyyy-MM-dd'),
@@ -138,11 +149,86 @@ const HabitDetailPage = () => {
               }
             }}
             onClickDay={(value) => setCurrentDate(value)}
-            tileClassName={({ date }) =>
-              completedDates.includes(format(date, 'yyyy-MM-dd'))
-                ? 'highlight'
-                : ''
-            }
+            tileClassName={({ date }) => {
+              const dateStr = format(date, 'yyyy-MM-dd');
+
+              if (isBefore(date, createdAtDate)) return '';
+
+              if (completedDates.includes(dateStr)) return 'completed-day';
+
+              if (keyDays.includes(dateStr)) return 'expected-day';
+
+              if (isBefore(date, new Date()) && !keyDays.includes(dateStr))
+                return 'gray-day';
+
+              return '';
+            }}
+            tileContent={({ date, view }) => {
+              if (view !== 'month') return null;
+
+              const dateStr = format(date, 'yyyy-MM-dd');
+              const isCompleted = completedDates.includes(dateStr);
+              const isExpected = keyDays.includes(dateStr);
+              const isBeforeToday = isBefore(date, new Date());
+              const isToday = format(date, 'yyyy-MM-dd') === today;
+              const isCreatedDate =
+                format(date, 'yyyy-MM-dd') ===
+                format(createdAtDate, 'yyyy-MM-dd');
+
+              return (
+                <span
+                  style={{
+                    display: 'block',
+                    position: 'relative',
+                    width: '100%',
+                    height: '100%',
+                  }}
+                >
+                  {isCreatedDate && (
+                    <Tooltip title={'Started on this day'}>
+                      <StarIcon
+                        sx={{
+                          position: 'absolute',
+                          top: -26,
+                          right: 2,
+                          fontSize: '1rem',
+                          color: 'gold',
+                        }}
+                      />
+                    </Tooltip>
+                  )}
+
+                  {isExpected && isCompleted && (
+                    <Tooltip title="Done">
+                      <CheckCircleIcon
+                        sx={{
+                          position: 'absolute',
+                          top: -26,
+                          right: 2,
+                          fontSize: '1rem',
+                          color: '#00800073',
+                        }}
+                      />
+                    </Tooltip>
+                  )}
+
+                  {isExpected && (isBeforeToday || isToday) && !isCompleted && (
+                    <Tooltip title="Missed">
+                      <RadioButtonUncheckedIcon
+                        sx={{
+                          position: 'absolute',
+                          top: -26,
+                          right: 2,
+                          fontSize: '1rem',
+                          color: '#ff000080',
+                        }}
+                      />
+                    </Tooltip>
+                  )}
+                </span>
+              );
+            }}
+            minDate={new Date('2025-01-01')}
           />
         </Box>
 
@@ -152,7 +238,13 @@ const HabitDetailPage = () => {
             size="large"
             startIcon={<CheckCircleOutlineIcon />}
             disabled={isTodayCompleted || markCompletedMutation.isPending}
-            onClick={() => markCompletedMutation.mutate()}
+            onClick={() =>
+              markCompletedMutation.mutate({
+                habitId,
+                date: today,
+                completed: true,
+              })
+            }
           >
             {isTodayCompleted ? 'Already marked today' : 'Mark Today as Done'}
           </Button>

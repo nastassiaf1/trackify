@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
 import { axiosInstance } from './api';
-import { Habit, HabitPayload, HabitStatusPayload } from './interfaces';
+import {
+  Habit,
+  HabitDayPayload,
+  HabitPayload,
+  HabitStatusPayload,
+} from './interfaces';
 
 const HABITS = 'habits';
 
@@ -29,6 +34,10 @@ const useHabitsApi = () => {
       updateHabit: (habitId: number, updates: Partial<Habit>): Promise<Habit> =>
         axiosInstance
           .patch<Habit>(`/habits/${habitId}`, updates)
+          .then((res) => res.data),
+      markDayAsDone: ({ habitId, date, completed }: HabitDayPayload) =>
+        axiosInstance
+          .patch<Habit>(`/habits/${habitId}/completed`, { date, completed })
           .then((res) => res.data),
       queryKey: HABITS,
     }),

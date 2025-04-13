@@ -29,7 +29,9 @@ export interface Habit {
   isCompleted: boolean;
   completedAt: string | null;
   userId: number;
+  createdAt: string;
   color?: ColorVariant;
+  updatedAt?: string;
 }
 
 export type FrequencyType = (typeof FREQUENCY_OPTIONS)[number]['value'];
@@ -47,3 +49,9 @@ export interface HabitStatusPayload {
 }
 
 export type ColorVariant = keyof typeof cardColors;
+
+export interface HabitDayPayload {
+  habitId: number;
+  date: string;
+  completed: boolean;
+}

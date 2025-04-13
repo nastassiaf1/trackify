@@ -13,7 +13,24 @@
 }
 
 .highlight {
-  background-color: #a5d6a7 !important;
-  color: #000 !important;
+  background-color: #a5d6a7;
+  color: #000;
+  border-radius: 8px;
+}
+
+.completed-day {
+  background-color: #c8e6c9dd;
+  border-radius: 8px;
+  color: black;
+}
+
+.expected-day {
+  background-color: #ffe0b236;
+  border-radius: 8px;
+}
+
+.gray-day {
+  background-color: #f0f0f042;
+  color: #aaa;
   border-radius: 8px;
 }
