@@ -23,7 +23,7 @@ import { TrackStatus } from 'src/api/constants';
 import 'react-calendar/dist/Calendar.css';
 import './habit-detail-calendar.css';
 
-import { generateKeyDates, getNextPlannedDate } from './helpers';
+import { generateKeyDates, getNextPlannedDate } from '../helpers';
 import BoxTrackLine from './box-track-line';
 
 const HabitDetailPage = () => {
