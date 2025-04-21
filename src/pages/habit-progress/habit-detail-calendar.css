@@ -29,6 +29,12 @@
   border-radius: 8px;
 }
 
+.next-day {
+  background-color: #ffff0026;
+  border-radius: 8px;
+  color: black;
+}
+
 .over-day {
   background-color: #dcf6ffdd;
   border-radius: 8px;

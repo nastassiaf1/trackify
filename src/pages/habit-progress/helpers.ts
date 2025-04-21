@@ -1,4 +1,11 @@
-import { addDays, isBefore, isSameDay, format, getDay } from 'date-fns';
+import {
+  addDays,
+  isBefore,
+  isSameDay,
+  format,
+  getDay,
+  parseISO,
+} from 'date-fns';
 import { Habit } from 'src/api/interfaces';
 
 export const generateKeyDates = (habit: Habit): string[] => {
@@ -52,4 +59,37 @@ export const generateKeyDates = (habit: Habit): string[] => {
   }
 
   return result;
+};
+
+export const getNextPlannedDate = (
+  habit: Habit,
+  keyDays: string[],
+): string | null => {
+  if (!keyDays.length) return null;
+
+  const lastDate = parseISO(keyDays[keyDays.length - 1]);
+
+  if (habit.frequencyType === 'custom' && habit.repeatEveryXDays) {
+    return format(addDays(lastDate, habit.repeatEveryXDays), 'yyyy-MM-dd');
+  }
+
+  if (habit.frequencyType === 'daily') {
+    return format(addDays(lastDate, 1), 'yyyy-MM-dd');
+  }
+
+  if (habit.frequencyType === 'weekly') {
+    return format(addDays(lastDate, 7), 'yyyy-MM-dd');
+  }
+
+  if (Array.isArray(habit.daysOfWeek)) {
+    let nextDate = addDays(lastDate, 1);
+    for (let i = 0; i < 14; i++) {
+      if (habit.daysOfWeek.includes(getDay(nextDate))) {
+        return format(nextDate, 'yyyy-MM-dd');
+      }
+      nextDate = addDays(nextDate, 1);
+    }
+  }
+
+  return null;
 };

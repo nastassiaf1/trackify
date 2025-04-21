@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import Calendar from 'react-calendar';
-import { format, isBefore } from 'date-fns';
+import { addDays, format, isBefore } from 'date-fns';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import StarIcon from '@mui/icons-material/Star';
 
@@ -23,7 +23,7 @@ import { TrackStatus } from 'src/api/constants';
 import 'react-calendar/dist/Calendar.css';
 import './habit-detail-calendar.css';
 
-import { generateKeyDates } from './helpers';
+import { generateKeyDates, getNextPlannedDate } from './helpers';
 import BoxTrackLine from './box-track-line';
 
 const HabitDetailPage = () => {
@@ -58,12 +58,15 @@ const HabitDetailPage = () => {
   }
 
   const keyDays = generateKeyDates(habit);
+  const nextKeyDay = getNextPlannedDate(habit, keyDays);
+
   const createdAtDate = new Date(habit.createdAt);
 
   const completedDates = habit.completedDates.map((d) =>
     format(new Date(d), 'yyyy-MM-dd'),
   );
   const today = format(new Date(), 'yyyy-MM-dd');
+
   const isTodayCompleted = completedDates.includes(today);
 
   const goToToday = () => {
@@ -167,6 +170,8 @@ const HabitDetailPage = () => {
               )
                 return 'over-day';
 
+              if (nextKeyDay === dateStr) return 'next-day';
+
               if (completedDates.includes(dateStr)) return 'completed-day';
 
               if (keyDays.includes(dateStr)) return 'expected-day';
@@ -187,6 +192,7 @@ const HabitDetailPage = () => {
               const isCreatedDate =
                 format(date, 'yyyy-MM-dd') ===
                 format(createdAtDate, 'yyyy-MM-dd');
+              const isNextDay = nextKeyDay === dateStr;
 
               return (
                 <div
@@ -194,8 +200,14 @@ const HabitDetailPage = () => {
                     position: 'relative',
                   }}
                 >
-                  {isCreatedDate && (
-                    <Tooltip title={'Started on this day'}>
+                  {(isCreatedDate || isNextDay) && (
+                    <Tooltip
+                      title={
+                        isCreatedDate
+                          ? 'Started on this day'
+                          : 'Next Planned Day'
+                      }
+                    >
                       <StarIcon
                         sx={{
                           position: 'absolute',
