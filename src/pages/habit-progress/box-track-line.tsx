@@ -11,7 +11,7 @@ const getColor = (status: TrackStatus) => {
   }
 
   if (status === TrackStatus.OVERACHIVED) {
-    return '#71e3f2d6';
+    return '#f2c071d6';
   }
 };
 

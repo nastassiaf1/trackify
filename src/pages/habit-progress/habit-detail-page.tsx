@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import Calendar from 'react-calendar';
-import { addDays, format, isBefore } from 'date-fns';
+import { format, isBefore } from 'date-fns';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import StarIcon from '@mui/icons-material/Star';
 
@@ -136,10 +136,15 @@ const HabitDetailPage = () => {
               borderRadius: '8px',
             },
             '& .react-calendar__tile--now': {
-              backgroundColor: '#e0f7fa',
+              backgroundColor: '#dbe2ff',
+              color: '#000',
+              fontWeight: '900',
+              '&:hover': {
+                backgroundColor: 'rgba(158, 157, 159, 0.27)',
+              },
             },
             '& .react-calendar__tile--active': {
-              backgroundColor: theme.palette.primary.light,
+              backgroundColor: '#718effc2 !important',
               color: theme.palette.primary.contrastText,
             },
             '& .highlight': {
