@@ -20,3 +20,9 @@ export const cardColors = {
   variant7: '#fdffc9',
   variant8: '#ffc9c9',
 } as const;
+
+export enum TrackStatus {
+  MISSED = 'missed',
+  DONE = 'done',
+  OVERACHIVED = 'overachieved',
+}

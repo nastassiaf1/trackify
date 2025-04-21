@@ -14,16 +14,17 @@ import Calendar from 'react-calendar';
 import { format, isBefore } from 'date-fns';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import StarIcon from '@mui/icons-material/Star';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
 import { useHabitsApi } from 'src/api/habits-api';
 import { queryClient } from 'src/api/queryClient';
+import { HabitDayPayload } from 'src/api/interfaces';
+import { TrackStatus } from 'src/api/constants';
 
 import 'react-calendar/dist/Calendar.css';
 import './habit-detail-calendar.css';
+
 import { generateKeyDates } from './helpers';
-import { HabitDayPayload } from 'src/api/interfaces';
+import BoxTrackLine from './box-track-line';
 
 const HabitDetailPage = () => {
   const calendarRef = useRef<HTMLDivElement | null>(null);
@@ -123,14 +124,20 @@ const HabitDetailPage = () => {
               boxShadow: theme.shadows[1],
               padding: '20px',
             },
+            '& .react-calendar__month-view__days': {
+              display: 'grid !important',
+              gridTemplateColumns: 'repeat(7, 1fr)',
+              gap: '2px',
+            },
+            '& .react-calendar__tile': {
+              borderRadius: '8px',
+            },
             '& .react-calendar__tile--now': {
               backgroundColor: '#e0f7fa',
-              borderRadius: '8px',
             },
             '& .react-calendar__tile--active': {
               backgroundColor: theme.palette.primary.light,
               color: theme.palette.primary.contrastText,
-              borderRadius: '8px',
             },
             '& .highlight': {
               backgroundColor: '#a5d6a7',
@@ -154,6 +161,12 @@ const HabitDetailPage = () => {
 
               if (isBefore(date, createdAtDate)) return '';
 
+              if (
+                !keyDays.includes(dateStr) &&
+                completedDates.includes(dateStr)
+              )
+                return 'over-day';
+
               if (completedDates.includes(dateStr)) return 'completed-day';
 
               if (keyDays.includes(dateStr)) return 'expected-day';
@@ -176,12 +189,9 @@ const HabitDetailPage = () => {
                 format(createdAtDate, 'yyyy-MM-dd');
 
               return (
-                <span
+                <div
                   style={{
-                    display: 'block',
                     position: 'relative',
-                    width: '100%',
-                    height: '100%',
                   }}
                 >
                   {isCreatedDate && (
@@ -189,8 +199,8 @@ const HabitDetailPage = () => {
                       <StarIcon
                         sx={{
                           position: 'absolute',
-                          top: -26,
-                          right: 2,
+                          top: '-30px',
+                          right: '4px',
                           fontSize: '1rem',
                           color: 'gold',
                         }}
@@ -199,33 +209,17 @@ const HabitDetailPage = () => {
                   )}
 
                   {isExpected && isCompleted && (
-                    <Tooltip title="Done">
-                      <CheckCircleIcon
-                        sx={{
-                          position: 'absolute',
-                          top: -26,
-                          right: 2,
-                          fontSize: '1rem',
-                          color: '#00800073',
-                        }}
-                      />
-                    </Tooltip>
+                    <BoxTrackLine status={TrackStatus.DONE} />
                   )}
 
                   {isExpected && (isBeforeToday || isToday) && !isCompleted && (
-                    <Tooltip title="Missed">
-                      <RadioButtonUncheckedIcon
-                        sx={{
-                          position: 'absolute',
-                          top: -26,
-                          right: 2,
-                          fontSize: '1rem',
-                          color: '#ff000080',
-                        }}
-                      />
-                    </Tooltip>
+                    <BoxTrackLine status={TrackStatus.MISSED} />
                   )}
-                </span>
+
+                  {!isExpected && isCompleted && (
+                    <BoxTrackLine status={TrackStatus.OVERACHIVED} />
+                  )}
+                </div>
               );
             }}
             minDate={new Date('2025-01-01')}

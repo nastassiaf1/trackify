@@ -29,6 +29,12 @@
   border-radius: 8px;
 }
 
+.over-day {
+  background-color: #dcf6ffdd;
+  border-radius: 8px;
+  color: black;
+}
+
 .gray-day {
   background-color: #f0f0f042;
   color: #aaa;
