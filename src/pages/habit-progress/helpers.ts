@@ -67,6 +67,12 @@ export const getNextPlannedDate = (
 ): string | null => {
   if (!keyDays.length) return null;
 
+  const todayStr = format(new Date(), 'yyyy-MM-dd');
+
+  if (keyDays.includes(todayStr) && !habit.completedDates.includes(todayStr)) {
+    return todayStr;
+  }
+
   const lastDate = parseISO(keyDays[keyDays.length - 1]);
 
   if (habit.frequencyType === 'custom' && habit.repeatEveryXDays) {
@@ -83,10 +89,12 @@ export const getNextPlannedDate = (
 
   if (Array.isArray(habit.daysOfWeek)) {
     let nextDate = addDays(lastDate, 1);
+
     for (let i = 0; i < 14; i++) {
       if (habit.daysOfWeek.includes(getDay(nextDate))) {
         return format(nextDate, 'yyyy-MM-dd');
       }
+
       nextDate = addDays(nextDate, 1);
     }
   }

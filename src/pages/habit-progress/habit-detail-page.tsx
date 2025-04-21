@@ -136,7 +136,6 @@ const HabitDetailPage = () => {
               borderRadius: '8px',
             },
             '& .react-calendar__tile--now': {
-              backgroundColor: '#dbe2ff',
               color: '#000',
               fontWeight: '900',
               '&:hover': {
@@ -210,14 +209,16 @@ const HabitDetailPage = () => {
                       title={
                         isCreatedDate
                           ? 'Started on this day'
-                          : 'Next Planned Day'
+                          : isNextDay && today === nextKeyDay
+                            ? "Don't miss today!"
+                            : 'Next Planned Day'
                       }
                     >
                       <StarIcon
                         sx={{
                           position: 'absolute',
                           top: '-30px',
-                          right: '4px',
+                          right: '70px',
                           fontSize: '1rem',
                           color: 'gold',
                         }}
@@ -257,7 +258,9 @@ const HabitDetailPage = () => {
               })
             }
           >
-            {isTodayCompleted ? 'Already marked today' : 'Mark Today as Done'}
+            {isTodayCompleted
+              ? 'Already marked today'
+              : `${today === nextKeyDay ? 'Today - is a key day! ' : ''}Mark Today as Done`}
           </Button>
         </Box>
       </Paper>
