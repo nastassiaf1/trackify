@@ -26,6 +26,8 @@ import { useNotification } from 'src/context/notification-context';
 
 import ColorSelector from './color-selector';
 import HabitCardEditOutlinedModal from './habit-card-edit-dialog';
+import { generateKeyDates, getNextPlannedDate } from 'src/pages/helpers';
+import { format } from 'date-fns';
 
 interface HabitCardProps {
   habit: Habit;
@@ -67,9 +69,10 @@ const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
     },
   });
 
-  const isCompletedToday = habit.completedDates.includes(
-    new Date().toISOString().split('T')[0],
-  );
+  const today = format(new Date(), 'yyyy-MM-dd');
+  const keyDays = generateKeyDates(habit);
+  const nextKeyDay = getNextPlannedDate(habit, keyDays);
+  const isCompletedToday = habit.completedDates.includes(today);
 
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
@@ -110,14 +113,20 @@ const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
 
     window.open(`/habits/${habit.id}`, '_blank');
   };
+  // eslint-disable-next-line no-debugger
+  debugger;
+
+  const borderLeft = isCompletedToday
+    ? '6px solid #00800073'
+    : nextKeyDay === today
+      ? '6px solid #ff4700a6'
+      : '6px solid transparent';
 
   return (
     <Card
       sx={{
         height: '320px',
-        borderLeft: isCompletedToday
-          ? '6px solid green'
-          : '6px solid transparent',
+        borderLeft,
         transition: '0.3s',
         '&:hover': {
           boxShadow: 6,
