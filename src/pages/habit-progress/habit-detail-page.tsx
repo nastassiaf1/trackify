@@ -20,7 +20,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useHabitsApi } from 'src/api/habits-api';
 import { queryClient } from 'src/api/queryClient';
 import { HabitDayPayload } from 'src/api/interfaces';
-import { TrackStatus } from 'src/api/constants';
+import { HabitStatus, TrackStatus } from 'src/api/constants';
 
 import 'react-calendar/dist/Calendar.css';
 import './habit-detail-calendar.css';
@@ -103,6 +103,21 @@ const HabitDetailPage = () => {
           </Typography>
         )}
 
+        <Typography
+          variant="subtitle1"
+          color="text.primary"
+          mb={3}
+          sx={{ fontSize: '1rem', lineHeight: 1.6 }}
+        >
+          Status:{' '}
+          <Typography
+            component="span"
+            color={habit.isCompleted ? '#008000cc' : '#c45024f2'}
+          >
+            {habit.isCompleted ? HabitStatus.COMPLETED : HabitStatus.ACTIVE}
+          </Typography>
+        </Typography>
+
         <Box display="flex" justifyContent="end">
           <Button
             size="small"
@@ -176,7 +191,8 @@ const HabitDetailPage = () => {
               )
                 return 'over-day';
 
-              if (nextKeyDay === dateStr) return 'next-day';
+              if (nextKeyDay === dateStr && !habit.isCompleted)
+                return 'next-day';
 
               if (completedDates.includes(dateStr)) return 'completed-day';
 
@@ -195,6 +211,7 @@ const HabitDetailPage = () => {
               const isExpected = keyDays.includes(dateStr);
               const isBeforeToday = isBefore(date, new Date());
               const isToday = format(date, 'yyyy-MM-dd') === today;
+              const isRemoved = habit.isCompleted;
               const isCreatedDate =
                 format(date, 'yyyy-MM-dd') ===
                 format(createdAtDate, 'yyyy-MM-dd');
@@ -209,7 +226,7 @@ const HabitDetailPage = () => {
                     },
                   }}
                 >
-                  {(isCreatedDate || isNextDay) && (
+                  {(isCreatedDate || isNextDay) && !isRemoved && (
                     <Tooltip
                       title={
                         isCreatedDate
@@ -243,48 +260,50 @@ const HabitDetailPage = () => {
                     <BoxTrackLine status={TrackStatus.OVERACHIVED} />
                   )}
 
-                  <Tooltip
-                    title={isCompleted ? 'Unmark as done' : 'Mark as done'}
-                  >
-                    <IconButton
-                      className="hover-button"
-                      size="small"
-                      sx={{
-                        position: 'absolute',
-                        top: '-12px',
-                        right: 6,
-                        opacity: 0,
-                        transition: 'opacity 0.2s',
-                        padding: 0,
-                        backgroundColor: 'transparent',
-                        boxShadow: 'none',
-                        '&:hover': {
-                          backgroundColor: 'transparent',
-                        },
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-
-                        markCompletedMutation.mutate({
-                          habitId,
-                          date: dateStr,
-                          completed: !isCompleted,
-                        });
-                      }}
+                  {!isRemoved && (
+                    <Tooltip
+                      title={isCompleted ? 'Unmark as done' : 'Mark as done'}
                     >
-                      {isCompleted ? (
-                        <HighlightOffIcon
-                          sx={{ color: '#c45024f2' }}
-                          fontSize="small"
-                        />
-                      ) : (
-                        <CheckCircleOutlineIcon
-                          sx={{ color: '#008000cc' }}
-                          fontSize="small"
-                        />
-                      )}
-                    </IconButton>
-                  </Tooltip>
+                      <IconButton
+                        className="hover-button"
+                        size="small"
+                        sx={{
+                          position: 'absolute',
+                          top: '-12px',
+                          right: 6,
+                          opacity: 0,
+                          transition: 'opacity 0.2s',
+                          padding: 0,
+                          backgroundColor: 'transparent',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            backgroundColor: 'transparent',
+                          },
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+
+                          markCompletedMutation.mutate({
+                            habitId,
+                            date: dateStr,
+                            completed: !isCompleted,
+                          });
+                        }}
+                      >
+                        {isCompleted ? (
+                          <HighlightOffIcon
+                            sx={{ color: '#c45024f2' }}
+                            fontSize="small"
+                          />
+                        ) : (
+                          <CheckCircleOutlineIcon
+                            sx={{ color: '#008000cc' }}
+                            fontSize="small"
+                          />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </Box>
               );
             }}
@@ -292,25 +311,27 @@ const HabitDetailPage = () => {
           />
         </Box>
 
-        <Box textAlign="center" mt={4}>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<CheckCircleOutlineIcon />}
-            disabled={isTodayCompleted || markCompletedMutation.isPending}
-            onClick={() =>
-              markCompletedMutation.mutate({
-                habitId,
-                date: today,
-                completed: true,
-              })
-            }
-          >
-            {isTodayCompleted
-              ? 'Already marked today'
-              : `${today === nextKeyDay ? 'Today - is a key day! ' : ''}Mark Today as Done`}
-          </Button>
-        </Box>
+        {!habit.isCompleted && (
+          <Box textAlign="center" mt={4}>
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<CheckCircleOutlineIcon />}
+              disabled={isTodayCompleted || markCompletedMutation.isPending}
+              onClick={() =>
+                markCompletedMutation.mutate({
+                  habitId,
+                  date: today,
+                  completed: true,
+                })
+              }
+            >
+              {isTodayCompleted
+                ? 'Already marked today'
+                : `${today === nextKeyDay ? 'Today - is a key day! ' : ''}Mark Today as Done`}
+            </Button>
+          </Box>
+        )}
       </Paper>
     </Box>
   );

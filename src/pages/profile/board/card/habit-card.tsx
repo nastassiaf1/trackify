@@ -112,11 +112,13 @@ const HabitCard = ({ habit }: HabitCardProps) => {
     window.open(`/habits/${habit.id}`, '_blank');
   };
 
-  const borderLeft = isCompletedToday
-    ? '6px solid #00800073'
-    : nextKeyDay === today
-      ? '6px solid #ff4700a6'
-      : '6px solid transparent';
+  const borderLeft = habit.isCompleted
+    ? '6px solid rgba(0, 101, 252, 0.45)'
+    : isCompletedToday
+      ? '6px solid #00800073'
+      : nextKeyDay === today
+        ? '6px solid #ff4700a6'
+        : '6px solid transparent';
 
   return (
     <Card
@@ -182,12 +184,14 @@ const HabitCard = ({ habit }: HabitCardProps) => {
                   />
                   Check as done
                 </MenuItem>
-                <MenuItem onClick={handleEditCard}>
-                  <EditOutlined
-                    sx={{ marginRight: 1.5, color: 'primary.main' }}
-                  />
-                  Edit
-                </MenuItem>
+                {!habit.isCompleted && (
+                  <MenuItem onClick={handleEditCard}>
+                    <EditOutlined
+                      sx={{ marginRight: 1.5, color: 'primary.main' }}
+                    />
+                    Edit
+                  </MenuItem>
+                )}
                 <MenuItem onClick={handleArchiveCard}>
                   <ArchiveOutlined
                     sx={{ marginRight: 1.5, color: 'primary.main' }}
