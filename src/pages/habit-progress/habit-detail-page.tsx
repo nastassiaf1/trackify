@@ -9,11 +9,13 @@ import {
   Paper,
   useTheme,
   Tooltip,
+  IconButton,
 } from '@mui/material';
 import Calendar from 'react-calendar';
 import { format, isBefore } from 'date-fns';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import StarIcon from '@mui/icons-material/Star';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import { useHabitsApi } from 'src/api/habits-api';
 import { queryClient } from 'src/api/queryClient';
@@ -199,9 +201,12 @@ const HabitDetailPage = () => {
               const isNextDay = nextKeyDay === dateStr;
 
               return (
-                <div
-                  style={{
+                <Box
+                  sx={{
                     position: 'relative',
+                    '&:hover .hover-button': {
+                      opacity: 1,
+                    },
                   }}
                 >
                   {(isCreatedDate || isNextDay) && (
@@ -237,7 +242,50 @@ const HabitDetailPage = () => {
                   {!isExpected && isCompleted && (
                     <BoxTrackLine status={TrackStatus.OVERACHIVED} />
                   )}
-                </div>
+
+                  <Tooltip
+                    title={isCompleted ? 'Unmark as done' : 'Mark as done'}
+                  >
+                    <IconButton
+                      className="hover-button"
+                      size="small"
+                      sx={{
+                        position: 'absolute',
+                        top: '-12px',
+                        right: 6,
+                        opacity: 0,
+                        transition: 'opacity 0.2s',
+                        padding: 0,
+                        backgroundColor: 'transparent',
+                        boxShadow: 'none',
+                        '&:hover': {
+                          backgroundColor: 'transparent',
+                        },
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+
+                        markCompletedMutation.mutate({
+                          habitId,
+                          date: dateStr,
+                          completed: !isCompleted,
+                        });
+                      }}
+                    >
+                      {isCompleted ? (
+                        <HighlightOffIcon
+                          sx={{ color: '#c45024f2' }}
+                          fontSize="small"
+                        />
+                      ) : (
+                        <CheckCircleOutlineIcon
+                          sx={{ color: '#008000cc' }}
+                          fontSize="small"
+                        />
+                      )}
+                    </IconButton>
+                  </Tooltip>
+                </Box>
               );
             }}
             minDate={new Date('2025-01-01')}
