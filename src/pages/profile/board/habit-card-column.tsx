@@ -9,8 +9,6 @@ interface HabitCardColumnProps {
   title: HabitStatus;
   habits: Habit[];
   droppableId: HabitStatus;
-  dragSourceId: HabitStatus | null;
-  fullWidth?: boolean;
 }
 
 const getBackgroundColor = (
@@ -25,10 +23,6 @@ const getBackgroundColor = (
     return isDraggingOver ? 'rgba(255, 0, 0, 0.15)' : 'rgba(255, 0, 0, 0.05)';
   }
 
-  if (status === HabitStatus.ARCHIVED) {
-    return 'rgba(198, 198, 198, 0.15)';
-  }
-
   return 'transparent';
 };
 
@@ -36,13 +30,7 @@ const HabitCardColumn = ({
   title,
   habits,
   droppableId,
-  dragSourceId = null,
-  fullWidth = false,
 }: HabitCardColumnProps) => {
-  const isDisabled =
-    dragSourceId === HabitStatus.ARCHIVED &&
-    droppableId !== HabitStatus.ARCHIVED;
-
   return (
     <Paper sx={{ p: 2, minHeight: '60vh' }}>
       <Typography
@@ -58,9 +46,7 @@ const HabitCardColumn = ({
           title={
             title === HabitStatus.ACTIVE
               ? 'Habits you are currently building'
-              : title === HabitStatus.COMPLETED
-                ? 'Habits you have successfully formed'
-                : 'Archived habits are no longer active or recoverable'
+              : 'Habits you have successfully formed'
           }
           arrow
           placement="right"
@@ -84,7 +70,7 @@ const HabitCardColumn = ({
           </IconButton>
         </Tooltip>
       </Typography>
-      <Droppable droppableId={droppableId} isDropDisabled={isDisabled}>
+      <Droppable droppableId={droppableId}>
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
@@ -92,9 +78,7 @@ const HabitCardColumn = ({
             style={{
               padding: '20px',
               display: 'grid',
-              gridTemplateColumns: fullWidth
-                ? 'repeat(auto-fill, minmax(320px, 1fr))'
-                : '1fr',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
               gap: '16px',
               transition: 'background-color 0.3s ease-in-out',
               backgroundColor: getBackgroundColor(
@@ -108,7 +92,6 @@ const HabitCardColumn = ({
                 key={habit.id.toString()}
                 draggableId={habit.id.toString()}
                 index={index}
-                isDragDisabled={title === HabitStatus.ARCHIVED}
               >
                 {(provided) => (
                   <div
@@ -120,11 +103,7 @@ const HabitCardColumn = ({
                       marginBottom: 8,
                     }}
                   >
-                    <HabitCard
-                      habit={habit}
-                      fullWidth={fullWidth}
-                      disabled={title === HabitStatus.ARCHIVED}
-                    />
+                    <HabitCard habit={habit} />
                   </div>
                 )}
               </Draggable>

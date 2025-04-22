@@ -31,11 +31,9 @@ import { format } from 'date-fns';
 
 interface HabitCardProps {
   habit: Habit;
-  fullWidth: boolean;
-  disabled: boolean;
 }
 
-const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
+const HabitCard = ({ habit }: HabitCardProps) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
@@ -113,8 +111,6 @@ const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
 
     window.open(`/habits/${habit.id}`, '_blank');
   };
-  // eslint-disable-next-line no-debugger
-  debugger;
 
   const borderLeft = isCompletedToday
     ? '6px solid #00800073'
@@ -133,9 +129,7 @@ const HabitCard = ({ habit, fullWidth, disabled }: HabitCardProps) => {
           cursor: 'pointer',
         },
         overflow: 'hidden',
-        backgroundColor: disabled
-          ? '#fff'
-          : cardColors[habit.color || 'variant1'],
+        backgroundColor: cardColors[habit.color || 'variant1'],
       }}
     >
       <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
