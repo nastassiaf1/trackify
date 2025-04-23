@@ -9,7 +9,7 @@ import AboutPage from './pages/about';
 import ContactsPage from './pages/contacts/contacts-page';
 import ProfilePage from './pages/profile/profile-page';
 import BoardPage from './pages/profile/board/board-page';
-import NotFoundPage from './components/not-found-page';
+import NotFoundPage from './pages/not-found-page';
 import HabitDetailPage from './pages/habit-progress/habit-detail-page';
 
 const App = () => {
